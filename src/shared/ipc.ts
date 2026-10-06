@@ -36,6 +36,17 @@ export interface StrideApi {
   /** Changes the goal and re-plans the rest of the training around it. */
   saveGoal(goalSeconds: number): Promise<void>
 
+  /** Subscribes Calendar to the live plan feed. */
+  addToCalendar(): Promise<void>
+  /** Asks where to save, then writes the plan as CSV. Resolves to the path, or null if cancelled. */
+  exportCsv(): Promise<string | null>
+  setOpenAtLogin(on: boolean): Promise<void>
+
+  /** The menu bar panel tells main how tall its content is. */
+  trayResize(height: number): Promise<void>
+  /** From the menu bar panel: open the main window (optionally at a screen or log). */
+  openMain(n: NavigateRequest | null): Promise<void>
+
   onState(cb: (s: AppState) => void): () => void
   onNavigate(cb: (n: NavigateRequest) => void): () => void
 }
@@ -58,5 +69,10 @@ export const IPC = {
   deleteRun: 'run:delete',
   skipSession: 'session:skip',
   setBenchmark: 'run:benchmark',
-  saveGoal: 'race:goal'
+  saveGoal: 'race:goal',
+  addToCalendar: 'export:calendar',
+  exportCsv: 'export:csv',
+  setOpenAtLogin: 'app:login-item',
+  trayResize: 'tray:resize',
+  openMain: 'tray:open-main'
 } as const

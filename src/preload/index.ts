@@ -29,6 +29,11 @@ const api: StrideApi = {
   skipSession: (id) => ipcRenderer.invoke(IPC.skipSession, id),
   setBenchmark: (id) => ipcRenderer.invoke(IPC.setBenchmark, id),
   saveGoal: (sec) => ipcRenderer.invoke(IPC.saveGoal, sec),
+  addToCalendar: () => ipcRenderer.invoke(IPC.addToCalendar),
+  exportCsv: () => ipcRenderer.invoke(IPC.exportCsv),
+  setOpenAtLogin: (on) => ipcRenderer.invoke(IPC.setOpenAtLogin, on),
+  trayResize: (h) => ipcRenderer.invoke(IPC.trayResize, h),
+  openMain: (n) => ipcRenderer.invoke(IPC.openMain, n),
   onState: on<AppState>(IPC.stateChanged),
   onNavigate: on<NavigateRequest>(IPC.navigate)
 }

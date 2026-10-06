@@ -1,6 +1,6 @@
 // Pure helpers that turn stored plan data into what the screens show.
 import { addDays, daysBetween, parseISODate } from './dates'
-import { formatDistance, formatDuration, formatPace, MONTHS, MONTHS_LONG, weekdayLong } from './format'
+import { formatDistance, formatDuration, formatPace, formatTemp, MONTHS, MONTHS_LONG, weekdayLong } from './format'
 import type { ChangeSet, ISODate, Phase, PlanWeek, Prediction, Race, Run, Session, SessionType, Step, Units } from './types'
 
 const KEY: SessionType[] = ['tempo', 'intervals', 'long', 'race']
@@ -220,4 +220,14 @@ export function unloggedSessions(sessions: Session[], runs: Run[], today: ISODat
 export function sessionDayName(s: Session, today: ISODate): string {
   const when = s.date === addDays(today, -1) ? 'yesterday' : weekdayLong(parseISODate(s.date).getDay())
   return `${when}'s ${sessionTitle(s.type).toLowerCase()}`
+}
+
+/** The menu bar title: "8 km · 19°", "Rest · 19°", "✓ 8 km". Empty before there's a plan. */
+export function trayTitle(sessions: Session[], runs: Run[], today: ISODate, high: number | null, units: Units): string {
+  const run = runs.find((r) => r.date === today)
+  if (run) return `✓ ${formatDistance(run.distanceKm, units)} ${units === 'metric' ? 'km' : 'mi'}`
+  if (sessions.length === 0) return ''
+  const s = sessions.find((x) => x.date === today && x.type !== 'rest')
+  const temp = high === null ? '' : ` · ${formatTemp(high, units)}`
+  return s ? `${formatDistance(s.distanceKm, units)} ${units === 'metric' ? 'km' : 'mi'}${temp}` : `Rest${temp}`
 }

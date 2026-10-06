@@ -1,35 +1,50 @@
-import { app, BrowserWindow, ipcMain, Menu, nativeImage, Tray } from 'electron'
+import { app, BrowserWindow, dialog, ipcMain, Menu, nativeImage, shell, Tray } from 'electron'
+import { writeFile } from 'fs/promises'
 import { join } from 'path'
 import { IPC, type NavigateRequest } from '@shared/ipc'
 import type { AppState, Profile, Race, Run, Session, Settings } from '@shared/types'
 import { todayISO } from '@shared/dates'
 import { formatDistanceWithUnit } from '@shared/format'
-import { sessionDayName } from '@shared/plan-view'
+import { sessionDayName, trayTitle } from '@shared/plan-view'
+import { dayHigh, forecastFor } from '@shared/weather'
 import { killAll } from './claude'
 import { Store } from './db'
 import { searchPlaces } from './geo'
 import { Planner } from './planner'
 import { Reminders } from './reminders'
+import { CalendarFeed, planCsv } from './export'
 import { Runs } from './runs'
+import { Schedule } from './schedule'
+import { TrayPanel } from './trayPanel'
 import { registerScheme, Screenshots } from './screenshots'
 
 let win: BrowserWindow | null = null
 let tray: Tray | null = null
+let trayMenu: Menu | null = null
+const panel = new TrayPanel(join(__dirname, '../preload/index.js'))
 let store: Store
 let planner: Planner
 let runs: Runs
 let shots: Screenshots
 let reminders: Reminders
+let schedule: Schedule
+let feed: CalendarFeed
 let quitting = false
 
 function state(): AppState {
   const { running, queued, lastRunAt, error } = planner
-  return { ...store.snapshot(todayISO()), refresh: { running, queued, lastRunAt, error } }
+  return {
+    ...store.snapshot(todayISO()),
+    refresh: { running, queued, lastRunAt, error },
+    calendar: feed?.status() ?? { subscribed: false, runs: 0 },
+    openAtLogin: app.getLoginItemSettings().openAtLogin
+  }
 }
 
 function broadcast(): void {
   const s = state()
   win?.webContents.send(IPC.stateChanged, s)
+  panel.webContents?.send(IPC.stateChanged, s)
   updateTray(s)
 }
 
@@ -53,7 +68,9 @@ function createWindow(): void {
     }
   })
 
-  win.once('ready-to-show', () => win?.show())
+  // Launched at login, Stride starts quietly in the menu bar.
+  const atLogin = app.getLoginItemSettings().wasOpenedAtLogin
+  win.once('ready-to-show', () => !atLogin && win?.show())
 
   // Dev aid: STRIDE_CAPTURE=out.png renders the window to a PNG and exits.
   // STRIDE_CAPTURE_JS runs in the page first (to click through to a state).
@@ -65,12 +82,20 @@ function createWindow(): void {
           await win!.webContents.executeJavaScript(process.env.STRIDE_CAPTURE_JS).catch((e) => console.error('capture script failed:', e))
           await new Promise((r) => setTimeout(r, Number(process.env.STRIDE_CAPTURE_WAIT ?? 800)))
         }
-        // macOS stops painting occluded windows; bring it forward and force a fresh frame.
-        win!.show()
-        win!.webContents.invalidate()
-        await new Promise((r) => setTimeout(r, 400))
-        const img = await win!.webContents.capturePage()
-        const text = await win!.webContents.executeJavaScript('document.body.innerText')
+        // STRIDE_CAPTURE_TARGET=tray captures the menu bar panel instead.
+        let target = win!.webContents
+        if (process.env.STRIDE_CAPTURE_TARGET === 'tray') {
+          panel.toggle({ x: 900, y: 0, width: 24, height: 24 })
+          await new Promise((r) => setTimeout(r, 1500))
+          target = panel.webContents!
+        } else {
+          // macOS stops painting occluded windows; bring it forward and force a fresh frame.
+          win!.show()
+          win!.webContents.invalidate()
+          await new Promise((r) => setTimeout(r, 400))
+        }
+        const img = await target.capturePage()
+        const text = await target.executeJavaScript('document.body.innerText')
         const fs = await import('fs')
         await fs.promises.writeFile(capture, img.toPNG())
         await fs.promises.writeFile(`${capture}.txt`, text)
@@ -102,6 +127,7 @@ function showWindow(): void {
 }
 
 function navigate(n: NavigateRequest): void {
+  panel.hide()
   showWindow()
   // A freshly created window needs to load before it can listen.
   if (win!.webContents.isLoading()) win!.webContents.once('did-finish-load', () => win?.webContents.send(IPC.navigate, n))
@@ -115,6 +141,9 @@ function createTray(): void {
   icon.setTemplateImage(true)
   tray = new Tray(icon)
   tray.setToolTip('Stride')
+  // Left click: the panel. Right click: the menu.
+  tray.on('click', (_, bounds) => panel.toggle(bounds))
+  tray.on('right-click', () => trayMenu && tray?.popUpContextMenu(trayMenu))
   updateTray(state())
 }
 
@@ -122,27 +151,25 @@ function updateTray(s: AppState): void {
   if (!tray) return
   const toLog = reminders?.pending() ?? []
   const today = todayISO()
-  // Stage 5 adds today's session here ("8 km · 19°"). For now, flag runs waiting to be logged.
-  tray.setTitle(toLog.length ? `${toLog.length} to log` : '')
+  const high = dayHigh(forecastFor(s.forecast, today))
+  tray.setTitle(trayTitle(s.sessions, s.runs, today, high, s.settings.units), { fontType: 'monospacedDigit' })
   tray.setToolTip(toLog.length ? `Stride · ${toLog.length} run${toLog.length > 1 ? 's' : ''} to log` : 'Stride')
-  tray.setContextMenu(
-    Menu.buildFromTemplate([
-      { label: 'Open Stride', click: showWindow },
-      { label: 'Log a run…', click: () => openLog(null) },
-      ...(toLog.length
-        ? [
-            { type: 'separator' as const },
-            ...toLog.map((x) => ({
-              label: `Log ${sessionDayName(x, today)} · ${formatDistanceWithUnit(x.distanceKm, s.settings.units)}`,
-              click: () => openLog(x)
-            }))
-          ]
-        : []),
-      { type: 'separator' },
-      { label: s.refresh.running ? 'Refreshing…' : 'Refresh now', enabled: !s.refresh.running, click: () => void runRefresh() },
-      { label: 'Quit Stride', role: 'quit' }
-    ])
-  )
+  trayMenu = Menu.buildFromTemplate([
+    { label: 'Open Stride', click: showWindow },
+    { label: 'Log a run…', click: () => openLog(null) },
+    ...(toLog.length
+      ? [
+          { type: 'separator' as const },
+          ...toLog.map((x) => ({
+            label: `Log ${sessionDayName(x, today)} · ${formatDistanceWithUnit(x.distanceKm, s.settings.units)}`,
+            click: () => openLog(x)
+          }))
+        ]
+      : []),
+    { type: 'separator' },
+    { label: s.refresh.running ? 'Refreshing…' : 'Refresh now', enabled: !s.refresh.running, click: () => void runRefresh() },
+    { label: 'Quit Stride', role: 'quit' }
+  ])
 }
 
 async function runRefresh(): Promise<void> {
@@ -153,8 +180,10 @@ async function runRefresh(): Promise<void> {
 function registerIpc(): void {
   ipcMain.handle(IPC.getState, () => state())
   ipcMain.handle(IPC.saveProfile, (_, p: Profile) => {
+    const moved = store.getProfile()?.location?.name !== p.location?.name
     store.setProfile(p)
     broadcast()
+    if (moved) void schedule.updateForecast(true)
   })
   ipcMain.handle(IPC.saveSettings, (_, s: Settings) => {
     const before = store.getSettings()
@@ -186,6 +215,26 @@ function registerIpc(): void {
   ipcMain.handle(IPC.skipSession, (_, id: string) => runs.skip(id))
   ipcMain.handle(IPC.setBenchmark, (_, id: string | null) => runs.setBenchmark(id))
   ipcMain.handle(IPC.saveGoal, (_, sec: number) => runs.saveGoal(sec))
+  ipcMain.handle(IPC.addToCalendar, async () => {
+    if (!feed.port) throw new Error("The calendar feed couldn't start.")
+    await shell.openExternal(feed.url)
+  })
+  ipcMain.handle(IPC.exportCsv, async () => {
+    const race = store.getActiveRace()
+    const { canceled, filePath } = await dialog.showSaveDialog(win!, {
+      defaultPath: `${(race?.name ?? 'Stride plan').replace(/[/\\:]/g, '-')}.csv`,
+      filters: [{ name: 'CSV', extensions: ['csv'] }]
+    })
+    if (canceled || !filePath) return null
+    await writeFile(filePath, planCsv(store))
+    return filePath
+  })
+  ipcMain.handle(IPC.trayResize, (_, h: number) => panel.resize(h))
+  ipcMain.handle(IPC.openMain, (_, n: NavigateRequest | null) => (n ? navigate(n) : (panel.hide(), showWindow())))
+  ipcMain.handle(IPC.setOpenAtLogin, (_, on: boolean) => {
+    app.setLoginItemSettings({ openAtLogin: on })
+    broadcast()
+  })
 }
 
 // Dev aid: keep test data away from the real database.
@@ -201,8 +250,13 @@ app.whenReady().then(() => {
     store,
     skillFile: join(app.getAppPath(), 'skills/stride-planner/SKILL.md'),
     workDir: join(data, 'planner'),
-    onChange: broadcast
+    onChange: broadcast,
+    prepare: () => schedule.updateForecast(),
+    afterRefresh: () => schedule.markWeatherSeen()
   })
+  schedule = new Schedule(store, planner, broadcast)
+  feed = new CalendarFeed(store)
+  void feed.start()
   shots = new Screenshots(join(data, 'screenshots'))
   shots.registerProtocol()
   void shots.prune(new Set(store.getRuns().flatMap((r) => r.screenshotPaths ?? [])))
@@ -212,6 +266,7 @@ app.whenReady().then(() => {
   createWindow()
   createTray()
   reminders.start()
+  schedule.start()
   // A build interrupted by quitting picks up where it left off.
   if (store.getActiveRace() && store.getWeeks().length === 0) void runRefresh()
   app.on('activate', showWindow)

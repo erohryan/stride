@@ -22,7 +22,7 @@ settings        units (metric | imperial), runDays [0=Sun … 6=Sat], longRunDay
 plan            weeks [{index, startDate, phase, plannedKm}], sessions [Session]
 recentRuns      runs from the last 8 weeks (distanceKm, durationSec, effort 1–10, type, splits, avgHr)
 benchmarkRun    a run the runner marked as representative of their fitness, or null
-forecast        next 7 days, hourly {time, tempC, windKph, windDir, precipPct, condition}
+forecast        next 7 days, hourly {time, tempC, feelsC, windKph, windDir, precipPct, condition}
 revertedChangeSets  changes the runner undid; never re-apply the same change for the same forecast
 trigger         why this refresh is happening: manual, scheduled, run_logged, run_deleted,
                 goal_changed, settings_changed, benchmark_changed (may list several)

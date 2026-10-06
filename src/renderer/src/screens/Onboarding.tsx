@@ -52,6 +52,7 @@ const num = (s: string): number | null => {
 
 export function AboutYou({ state, onDone }: { state: AppState; onDone: () => void }): React.JSX.Element {
   const p = state.profile
+  const editing = !!p && !!state.race
   const [units, setUnits] = useState<Units>(state.settings.units)
   const show = (km: number): string => formatDistance(km, units)
   const [name, setName] = useState(p?.name ?? '')
@@ -104,7 +105,11 @@ export function AboutYou({ state, onDone }: { state: AppState; onDone: () => voi
 
   return (
     <Page>
-      <Hero step="Step 1 of 2" title="Tell us about you" subtitle="A few details so your plan starts where your running is today." />
+      {editing ? (
+        <Hero title="Your details" subtitle="Changes here shape future plans and predictions. Your current plan stays as it is until the next refresh." />
+      ) : (
+        <Hero step="Step 1 of 2" title="Tell us about you" subtitle="A few details so your plan starts where your running is today." />
+      )}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 18 }}>
         <Card title="You">
           <Field label="First name" error={err('name')}>
@@ -192,8 +197,13 @@ export function AboutYou({ state, onDone }: { state: AppState; onDone: () => voi
 
       <Footer>
         {tried && !valid && <span className="error-text">A few details need another look.</span>}
+        {editing && (
+          <button className="btn-soft" onClick={onDone}>
+            Cancel
+          </button>
+        )}
         <button className="btn-dark" style={{ padding: '11px 26px' }} onClick={save}>
-          Continue
+          {editing ? 'Save' : 'Continue'}
         </button>
       </Footer>
     </Page>

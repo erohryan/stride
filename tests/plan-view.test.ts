@@ -161,3 +161,24 @@ describe('superseded changes', () => {
     expect(activeWeatherChange([cs], '2026-10-06')).toBeNull()
   })
 })
+
+describe('schedule slots', () => {
+  it('finds the latest 6:00 or 18:00 slot', async () => {
+    const { latestSlot } = await import('../src/main/schedule')
+    expect(latestSlot(new Date(2026, 9, 6, 5, 59))).toBe('2026-10-05T18')
+    expect(latestSlot(new Date(2026, 9, 6, 6, 0))).toBe('2026-10-06T06')
+    expect(latestSlot(new Date(2026, 9, 6, 17, 30))).toBe('2026-10-06T06')
+    expect(latestSlot(new Date(2026, 9, 6, 23, 0))).toBe('2026-10-06T18')
+  })
+})
+
+describe('tray title', () => {
+  it('shows today at a glance', async () => {
+    const { trayTitle } = await import('@shared/plan-view')
+    const s = [sess('2026-10-06', 'easy', 8)]
+    expect(trayTitle(s, [], '2026-10-06', 19, 'metric')).toBe('8 km · 19°')
+    expect(trayTitle(s, [], '2026-10-07', 19, 'metric')).toBe('Rest · 19°')
+    expect(trayTitle(s, [], '2026-10-06', null, 'imperial')).toBe('5 mi')
+    expect(trayTitle([], [], '2026-10-06', 19, 'metric')).toBe('')
+  })
+})

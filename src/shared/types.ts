@@ -131,6 +131,8 @@ export interface ChangeSet {
 export interface HourlyForecast {
   time: string // ISO local, e.g. 2026-10-06T06:00
   tempC: number
+  /** Apparent ("feels like") temperature. */
+  feelsC?: number
   windKph: number
   windDir: number
   precipPct: number
@@ -158,6 +160,9 @@ export interface AppState {
   changeSets: ChangeSet[]
   forecast: Forecast[]
   refresh: RefreshState
+  /** Whether Calendar has fetched the plan feed lately, and how many upcoming runs it holds. */
+  calendar: { subscribed: boolean; runs: number }
+  openAtLogin: boolean
 }
 
 export const DEFAULT_SETTINGS: Settings = {

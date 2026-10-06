@@ -4,6 +4,7 @@ import type { Session } from '@shared/types'
 import { History, type LogTarget } from './screens/History'
 import { Home } from './screens/Home'
 import { Race } from './screens/Race'
+import { Settings } from './screens/Settings'
 import { AboutYou, BuildingPlan, RaceSetup } from './screens/Onboarding'
 import { Week } from './screens/Week'
 import { useAppState } from './useAppState'
@@ -61,7 +62,7 @@ export function App(): React.JSX.Element {
           }}
         />
       ) : (
-        <Placeholder screen={screen} />
+        <Settings state={state} onEditProfile={() => setEditingProfile(true)} />
       )
   }
 
@@ -83,17 +84,6 @@ function ErrorStrip({ message }: { message: string }): React.JSX.Element {
   return (
     <div className="fade-in" style={{ margin: '0 22px 12px', padding: '10px 16px', borderRadius: 14, background: 'var(--hero)', fontSize: 12.5, color: 'var(--body-on-tint)' }}>
       <b style={{ fontWeight: 700 }}>The plan couldn't refresh.</b> {message}
-    </div>
-  )
-}
-
-function Placeholder({ screen }: { screen: Screen }): React.JSX.Element {
-  return (
-    <div className="card" style={{ height: '100%', padding: '26px 28px' }}>
-      <span className="display" style={{ fontSize: 30, fontWeight: 700, letterSpacing: '-0.02em' }}>
-        {screen}
-      </span>
-      <p style={{ color: 'var(--muted)', fontSize: 13 }}>Coming in a later stage.</p>
     </div>
   )
 }

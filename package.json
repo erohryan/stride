@@ -10,7 +10,8 @@
     "start": "electron-vite preview",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run",
-    "postinstall": "electron-builder install-app-deps"
+    "postinstall": "electron-builder install-app-deps",
+    "package": "electron-vite build && electron-builder --mac --dir"
   },
   "dependencies": {
     "better-sqlite3": "^13.0.3",
@@ -35,5 +36,35 @@
     "esbuild@0.25.12": true,
     "esbuild@0.28.2": true,
     "electron-winstaller": false
+  },
+  "build": {
+    "appId": "app.stride.planner",
+    "productName": "Stride",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "out/**",
+      "skills/**",
+      "resources/**",
+      "package.json"
+    ],
+    "asarUnpack": [
+      "**/*.node"
+    ],
+    "mac": {
+      "target": "dir",
+      "icon": "resources/icon.png",
+      "category": "public.app-category.healthcare-fitness",
+      "identity": null
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "resources/icon.png"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "resources/icon.png"
+    }
   }
 }

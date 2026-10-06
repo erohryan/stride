@@ -22,6 +22,10 @@ export interface PlannerDeps {
   workDir: string
   /** Called whenever stored state or job status changes. */
   onChange: () => void
+  /** Runs before each plan job (fetches a fresh forecast). Failures are ignored. */
+  prepare?: () => Promise<void>
+  /** Runs after a refresh or build is stored. */
+  afterRefresh?: () => void
 }
 
 /** Time for the race distance, from the nearest standard distance via Riegel. */
@@ -164,6 +168,7 @@ export class Planner {
 
   private async runTask(task: 'build_plan' | 'refresh', trigger?: RefreshTrigger[]): Promise<void> {
     const { store } = this.deps
+    await this.deps.prepare?.().catch(() => undefined)
     const req: PlannerRequest = { ...this.request(task), trigger }
     const race = req.race
     if (!race) throw new Error('Set up a race first.')
@@ -194,6 +199,7 @@ export class Planner {
         store.setActiveRace({ ...race, goalSeconds: res.goalOptions.realistic })
       }
     })()
+    this.deps.afterRefresh?.()
   }
 
   private check(res: PlannerResponse, race: Race, replaceFrom: string): string[] {

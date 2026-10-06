@@ -113,3 +113,9 @@ export function morningCells(f: Forecast, units: Units): { label: string; temp: 
       inWindow: !!w && hourOf(h) >= w.startHour && hourOf(h) < w.endHour
     }))
 }
+
+/** The day's high between 6 am and 7 pm, or null without a forecast. */
+export function dayHigh(f: Forecast | null): number | null {
+  const hours = f ? daylight(f) : []
+  return hours.length ? Math.max(...hours.map((h) => h.tempC)) : null
+}

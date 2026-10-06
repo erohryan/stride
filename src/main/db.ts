@@ -202,7 +202,7 @@ export class Store {
   }
 
   // ── snapshot ──────────────────────────────────────────
-  snapshot(today: string): Omit<AppState, 'refresh'> {
+  snapshot(today: string): Omit<AppState, 'refresh' | 'calendar' | 'openAtLogin'> {
     const predictionHistory = this.getPredictions()
     return {
       profile: this.getProfile(),
