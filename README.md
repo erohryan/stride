@@ -29,6 +29,8 @@ Environment overrides:
 
 A full plan build takes two to four minutes; refreshes that change nothing are much quicker.
 
+`scripts/seed-weather-fixture.py <data-dir>/stride.db` adds a sample forecast (hot Thursday), a weather swap and a logged run to a plan built for early October 2026, for checking the weather states on screen.
+
 ## Tests
 
 `npm test` runs unit tests. `STRIDE_LIVE=1 npx vitest run tests/live.test.ts` calls the real planner (costs a little; takes a few minutes).
@@ -46,6 +48,6 @@ A full plan build takes two to four minutes; refreshes that change nothing are m
 
 1. Shell: scaffold, tokens and fonts, window chrome, tray, SQLite store. ✅
 2. Onboarding (about you → race and goal), the planner skill and its runner, Refresh plan. ✅
-3. Home (2a) and This week (2e).
+3. Home (2a) and This week (2e). ✅
 4. History and logging runs (manual and from a screenshot), Race (predictions, goal).
 5. Settings and export, Open-Meteo weather with change sets and Undo, scheduled refreshes, tray summary.

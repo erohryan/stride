@@ -1,12 +1,19 @@
 import { useState } from 'react'
 import { TopBar, type Screen } from './components/TopBar'
+import type { Session } from '@shared/types'
+import { Home } from './screens/Home'
 import { AboutYou, BuildingPlan, RaceSetup } from './screens/Onboarding'
+import { Week } from './screens/Week'
 import { useAppState } from './useAppState'
+import { useToday } from './useToday'
 
 export function App(): React.JSX.Element {
   const state = useAppState()
   const [screen, setScreen] = useState<Screen>('home')
   const [editingProfile, setEditingProfile] = useState(false)
+  // The session "Log this run" was pressed for; History (stage 4) opens Log a run prefilled with it.
+  const [, setLogDraft] = useState<Session | null>(null)
+  const today = useToday()
 
   if (!state) return <div style={{ height: '100%', background: 'var(--bg)' }} />
 
@@ -21,7 +28,18 @@ export function App(): React.JSX.Element {
     body = <BuildingPlan state={state} />
   } else {
     onboarding = false
-    body = <Placeholder screen={screen} />
+    const logRun = (s: Session | null): void => {
+      setLogDraft(s)
+      setScreen('history')
+    }
+    body =
+      screen === 'home' ? (
+        <Home state={state} today={today} onLogRun={logRun} />
+      ) : screen === 'week' ? (
+        <Week state={state} today={today} onLogRun={logRun} />
+      ) : (
+        <Placeholder screen={screen} />
+      )
   }
 
   return (
