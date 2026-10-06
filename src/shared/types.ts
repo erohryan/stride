@@ -25,6 +25,8 @@ export interface Settings {
   units: Units
   runDays: Weekday[]
   longRunDay: Weekday
+  /** Nudge to log a planned run the morning after it was due. */
+  reminders: { enabled: boolean; hour: number }
 }
 
 export interface Race {
@@ -90,7 +92,8 @@ export interface Run {
   splits: number[] // seconds per km
   notes?: string
   source: 'manual' | 'screenshot'
-  screenshotPath?: string
+  /** Copies kept in <userData>/screenshots. */
+  screenshotPaths?: string[]
   isBenchmark: boolean
 }
 
@@ -121,6 +124,8 @@ export interface ChangeSet {
   before: Session[]
   after: Session[]
   reverted: boolean
+  /** A later re-plan replaced sessions this change made, so it can no longer be undone. */
+  superseded?: boolean
 }
 
 export interface HourlyForecast {
@@ -158,5 +163,6 @@ export interface AppState {
 export const DEFAULT_SETTINGS: Settings = {
   units: 'metric',
   runDays: [0, 2, 3, 4, 6],
-  longRunDay: 0
+  longRunDay: 0,
+  reminders: { enabled: true, hour: 8 }
 }

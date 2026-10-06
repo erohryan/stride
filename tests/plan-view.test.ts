@@ -135,3 +135,29 @@ describe('weather', () => {
     expect(bestWindow(day([15, 15, 17, 19, 21, 22]))!.label).toBe('Best window 5–7 am, light breeze')
   })
 })
+
+describe('unlogged sessions', () => {
+  it('lists recent planned runs with nothing logged', async () => {
+    const { unloggedSessions, sessionDayName } = await import('@shared/plan-view')
+    const s = [
+      sess('2026-09-20', 'easy', 5), // too old
+      sess('2026-10-03', 'long', 12),
+      sess('2026-10-04', 'easy', 5, { status: 'skipped' }),
+      sess('2026-10-05', 'tempo', 8),
+      sess('2026-10-06', 'easy', 6) // today: not due yet
+    ]
+    const runs = [{ id: 'r', date: '2026-10-05', type: 'tempo' as const, distanceKm: 8, durationSec: 2400, effort: 7, splits: [], source: 'manual' as const, isBenchmark: false }]
+    const due = unloggedSessions(s, runs, '2026-10-06')
+    expect(due.map((x) => x.date)).toEqual(['2026-10-03'])
+    expect(sessionDayName(sess('2026-10-05', 'tempo', 8), '2026-10-06')).toBe("yesterday's tempo")
+    expect(sessionDayName(due[0], '2026-10-06')).toBe("Saturday's long run")
+  })
+})
+
+describe('superseded changes', () => {
+  it('hides a weather change once a later re-plan replaced its sessions', async () => {
+    const { activeWeatherChange } = await import('@shared/plan-view')
+    const cs: ChangeSet = { id: 'c', createdAt: '', kind: 'weather', reason: 'heat', before: [], after: [sess('2026-10-07', 'tempo', 6)], reverted: false, superseded: true }
+    expect(activeWeatherChange([cs], '2026-10-06')).toBeNull()
+  })
+})

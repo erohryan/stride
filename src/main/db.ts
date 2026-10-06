@@ -51,12 +51,12 @@ export class Store {
   }
 
   // ── kv ────────────────────────────────────────────────
-  private getKv<T>(key: string): T | null {
+  getKv<T>(key: string): T | null {
     const row = this.db.prepare('SELECT value FROM kv WHERE key = ?').get(key) as { value: string } | undefined
     return row ? (JSON.parse(row.value) as T) : null
   }
 
-  private setKv(key: string, value: unknown): void {
+  setKv(key: string, value: unknown): void {
     this.db
       .prepare('INSERT INTO kv (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value')
       .run(key, JSON.stringify(value))
@@ -157,6 +157,16 @@ export class Store {
 
   deleteRun(id: string): void {
     this.db.prepare('DELETE FROM run WHERE id = ?').run(id)
+  }
+
+  /** A new race starts a new plan: drop the old plan's weeks, its future sessions and its predictions. */
+  resetPlanFrom(date: string): void {
+    this.db.transaction(() => {
+      this.db.prepare('DELETE FROM plan_week').run()
+      this.db.prepare('DELETE FROM session WHERE date >= ?').run(date)
+      this.db.prepare('DELETE FROM prediction').run()
+      this.setKv('goalOptions', null)
+    })()
   }
 
   // ── predictions ───────────────────────────────────────

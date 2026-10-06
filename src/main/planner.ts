@@ -1,12 +1,14 @@
 import { randomUUID } from 'crypto'
-import { join } from 'path'
+import { dirname } from 'path'
 import { addDays, todayISO } from '@shared/dates'
 import {
   mondayOf,
   responseSchema,
   validatePlan,
+  type ParsedRun,
   type PlannedSession,
   type PlannerRequest,
+  type RefreshTrigger,
   type PlannerResponse,
   type PlannerTask
 } from '@shared/planner'
@@ -37,6 +39,7 @@ export function raceSecondsFrom(times: PredictionTimes, km: number): number {
 export class Planner {
   private queue: Promise<unknown> = Promise.resolve()
   private pendingRefresh: Promise<void> | null = null
+  private pendingTriggers = new Set<RefreshTrigger>()
   running = false
   queued = 0
   lastRunAt: string | null = null
@@ -69,14 +72,17 @@ export class Planner {
     return run
   }
 
-  /** Refreshes the plan. Requests made while one is already waiting share it. */
-  refresh(): Promise<void> {
+  /** Refreshes the plan. Requests made while one is already waiting share it (and its reasons). */
+  refresh(trigger: RefreshTrigger = 'manual'): Promise<void> {
+    this.pendingTriggers.add(trigger)
     if (this.pendingRefresh) return this.pendingRefresh
     const p = this.enqueue(async () => {
       this.pendingRefresh = null
+      const triggers = [...this.pendingTriggers]
+      this.pendingTriggers.clear()
       if (!this.deps.store.getActiveRace()) return
       // No plan yet (say the first build failed): build one instead.
-      await this.runTask(this.deps.store.getWeeks().length ? 'refresh' : 'build_plan')
+      await this.runTask(this.deps.store.getWeeks().length ? 'refresh' : 'build_plan', triggers)
     })
     this.pendingRefresh = p
     p.catch(() => (this.pendingRefresh = null))
@@ -97,11 +103,23 @@ export class Planner {
     })
   }
 
+  /**
+   * Reads one or more screenshots and returns the runs found in them, grouped by run.
+   * Doesn't touch the plan, so it runs straight away rather than waiting behind a refresh.
+   */
+  async parseScreenshots(imagePaths: string[]): Promise<ParsedRun[]> {
+    const req = { ...this.request('parse_screenshot'), imagePaths }
+    const res = await this.call(req, 'parse_screenshot')
+    const runs = res.parsedRuns ?? []
+    if (runs.length === 0) throw new Error("Couldn't read this screenshot.")
+    return runs
+  }
+
   /** Restores the sessions a change set replaced. */
   undo(changeSetId: string): void {
     const { store } = this.deps
     const cs = store.getChangeSets().find((c) => c.id === changeSetId)
-    if (!cs || cs.reverted) return
+    if (!cs || cs.reverted || cs.superseded) return
     store.db.transaction(() => {
       store.deleteSessions(cs.after.map((s) => s.id))
       store.upsertSessions(cs.before)
@@ -136,7 +154,7 @@ export class Planner {
       systemPrompt: loadSkill(this.deps.skillFile),
       input: JSON.stringify(extra ? { ...req, ...extra } : req),
       schema: responseSchema(req.task),
-      readDirs: req.imagePath ? [join(req.imagePath, '..')] : undefined,
+      readDirs: req.imagePaths?.length ? [...new Set(req.imagePaths.map((p) => dirname(p)))] : undefined,
       logDir: this.deps.workDir,
       logName,
       // Predictions and screenshot reading are quick lookups; planning needs more thought.
@@ -144,9 +162,9 @@ export class Planner {
     })
   }
 
-  private async runTask(task: 'build_plan' | 'refresh'): Promise<void> {
+  private async runTask(task: 'build_plan' | 'refresh', trigger?: RefreshTrigger[]): Promise<void> {
     const { store } = this.deps
-    const req = this.request(task)
+    const req: PlannerRequest = { ...this.request(task), trigger }
     const race = req.race
     if (!race) throw new Error('Set up a race first.')
 
@@ -218,5 +236,20 @@ export class Planner {
       store.upsertChangeSet(cs)
     }
     store.replaceSessionsFrom(replaceFrom, next)
+    this.supersedeStale()
+  }
+
+  /** Earlier changes whose sessions a re-plan has since replaced can't be undone any more. */
+  private supersedeStale(): void {
+    const { store } = this.deps
+    const live = new Map(store.getSessions().map((s) => [s.id, s]))
+    for (const cs of store.getChangeSets()) {
+      if (cs.reverted || cs.superseded) continue
+      const intact = cs.after.every((s) => {
+        const now = live.get(s.id)
+        return now && now.date === s.date && now.type === s.type && now.distanceKm === s.distanceKm
+      })
+      if (!intact) store.upsertChangeSet({ ...cs, superseded: true })
+    }
   }
 }

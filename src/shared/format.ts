@@ -83,3 +83,6 @@ export function formatDayDate(iso: string): string {
   const date = new Date(y, m - 1, d)
   return `${DAYS_SHORT[date.getDay()]} ${d} ${MONTHS[m - 1]}`
 }
+
+/** The URL the renderer loads a stored screenshot from (served by the stride-shot protocol). */
+export const shotUrl = (path: string): string => `stride-shot://${encodeURIComponent(path.split(/[\\/]/).pop()!)}`

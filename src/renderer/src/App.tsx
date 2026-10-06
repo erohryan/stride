@@ -1,7 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { TopBar, type Screen } from './components/TopBar'
 import type { Session } from '@shared/types'
+import { History, type LogTarget } from './screens/History'
 import { Home } from './screens/Home'
+import { Race } from './screens/Race'
 import { AboutYou, BuildingPlan, RaceSetup } from './screens/Onboarding'
 import { Week } from './screens/Week'
 import { useAppState } from './useAppState'
@@ -11,9 +13,19 @@ export function App(): React.JSX.Element {
   const state = useAppState()
   const [screen, setScreen] = useState<Screen>('home')
   const [editingProfile, setEditingProfile] = useState(false)
-  // The session "Log this run" was pressed for; History (stage 4) opens Log a run prefilled with it.
-  const [, setLogDraft] = useState<Session | null>(null)
+  // What History's right-hand card shows: a new log (maybe for a planned session) or a run being edited.
+  const [logTarget, setLogTarget] = useState<LogTarget>({ kind: 'new', session: null, nonce: 0 })
   const today = useToday()
+
+  // Reminder notifications and the tray menu ask for a screen (and maybe a log).
+  useEffect(
+    () =>
+      window.stride.onNavigate((n) => {
+        setScreen(n.screen)
+        if (n.logSession !== undefined) setLogTarget({ kind: 'new', session: n.logSession, nonce: Date.now() })
+      }),
+    []
+  )
 
   if (!state) return <div style={{ height: '100%', background: 'var(--bg)' }} />
 
@@ -29,7 +41,7 @@ export function App(): React.JSX.Element {
   } else {
     onboarding = false
     const logRun = (s: Session | null): void => {
-      setLogDraft(s)
+      setLogTarget({ kind: 'new', session: s, nonce: Date.now() })
       setScreen('history')
     }
     body =
@@ -37,6 +49,17 @@ export function App(): React.JSX.Element {
         <Home state={state} today={today} onLogRun={logRun} />
       ) : screen === 'week' ? (
         <Week state={state} today={today} onLogRun={logRun} />
+      ) : screen === 'history' ? (
+        <History state={state} today={today} target={logTarget} onTarget={setLogTarget} />
+      ) : screen === 'race' ? (
+        <Race
+          state={state}
+          today={today}
+          onBenchmarkFiles={(files) => {
+            setLogTarget({ kind: 'new', session: null, nonce: Date.now(), files, benchmark: true })
+            setScreen('history')
+          }}
+        />
       ) : (
         <Placeholder screen={screen} />
       )

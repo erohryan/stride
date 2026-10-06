@@ -96,7 +96,7 @@ export function AboutYou({ state, onDone }: { state: AppState; onDone: () => voi
       age: age.trim() ? num(age) : null,
       maxHr: maxHr.trim() ? num(maxHr) : null
     }
-    const settings: Settings = { units, runDays, longRunDay }
+    const settings: Settings = { ...state.settings, units, runDays, longRunDay }
     await window.stride.saveSettings(settings)
     await window.stride.saveProfile(profile)
     onDone()
@@ -208,7 +208,7 @@ function Footer({ children }: { children: ReactNode }): React.JSX.Element {
 
 type DistanceId = '5k' | '10k' | 'half' | 'marathon' | 'custom'
 
-export function RaceSetup({ state, onBack }: { state: AppState; onBack?: () => void }): React.JSX.Element {
+export function RaceSetup({ state, onBack, onCancel }: { state: AppState; onBack?: () => void; onCancel?: () => void }): React.JSX.Element {
   const units = state.settings.units
   const unit = units === 'metric' ? 'km' : 'mi'
   const [name, setName] = useState('')
@@ -277,7 +277,11 @@ export function RaceSetup({ state, onBack }: { state: AppState; onBack?: () => v
 
   return (
     <Page>
-      <Hero step={onBack ? 'Step 2 of 2' : undefined} title="What are you training for?" subtitle="Pick your race. We'll build the plan backward from race day." />
+      <Hero
+        step={onBack ? 'Step 2 of 2' : undefined}
+        title={onCancel ? 'A new race' : 'What are you training for?'}
+        subtitle={onCancel ? 'Your runs stay. The plan is rebuilt for the new race, from this week to race day.' : "Pick your race. We'll build the plan backward from race day."}
+      />
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 18, alignItems: 'start' }}>
         <Card title="Your race">
           <Field label="Race name" error={err('name')}>
@@ -347,10 +351,10 @@ export function RaceSetup({ state, onBack }: { state: AppState; onBack?: () => v
           )}
         </Card>
       </div>
-      {onBack && (
+      {(onBack || onCancel) && (
         <Footer>
-          <button className="btn-float" style={{ marginRight: 'auto' }} onClick={onBack}>
-            Back
+          <button className="btn-float" style={{ marginRight: 'auto' }} onClick={onBack ?? onCancel}>
+            {onBack ? 'Back' : 'Cancel'}
           </button>
         </Footer>
       )}

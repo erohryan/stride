@@ -163,7 +163,7 @@ export function activeWeatherChange(changeSets: ChangeSet[], today: ISODate): Ch
   const end = addDays(today, 6)
   return (
     changeSets.find(
-      (c) => c.kind === 'weather' && !c.reverted && [...c.after, ...c.before].some((s) => s.date >= today && s.date <= end)
+      (c) => c.kind === 'weather' && !c.reverted && !c.superseded && [...c.after, ...c.before].some((s) => s.date >= today && s.date <= end)
     ) ?? null
   )
 }
@@ -207,4 +207,17 @@ export function clockTime(iso: string): string {
 export function changedDates(cs: ChangeSet | null): Set<ISODate> {
   if (!cs) return new Set()
   return new Set(cs.after.filter((s) => s.movedFrom || cs.before.some((b) => b.date === s.date)).map((s) => s.date))
+}
+
+/** Planned runs from the last `days` days that were neither logged nor skipped. */
+export function unloggedSessions(sessions: Session[], runs: Run[], today: ISODate, days = 7): Session[] {
+  const from = addDays(today, -days)
+  const ran = new Set(runs.map((r) => r.date))
+  return sessions.filter((s) => s.date < today && s.date >= from && s.type !== 'rest' && s.status === 'planned' && !ran.has(s.date))
+}
+
+/** "yesterday's easy run", "Saturday's long run". */
+export function sessionDayName(s: Session, today: ISODate): string {
+  const when = s.date === addDays(today, -1) ? 'yesterday' : weekdayLong(parseISODate(s.date).getDay())
+  return `${when}'s ${sessionTitle(s.type).toLowerCase()}`
 }

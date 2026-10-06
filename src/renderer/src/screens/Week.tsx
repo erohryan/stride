@@ -79,7 +79,7 @@ function defaultSelection(days: Day[]): ISODate {
 /** The newest weather change still in force that touches this week. */
 function weatherChangeFor(changeSets: ChangeSet[], start: ISODate): ChangeSet | null {
   const end = addDays(start, 6)
-  return changeSets.find((c) => c.kind === 'weather' && !c.reverted && [...c.after, ...c.before].some((s) => s.date >= start && s.date <= end)) ?? null
+  return changeSets.find((c) => c.kind === 'weather' && !c.reverted && !c.superseded && [...c.after, ...c.before].some((s) => s.date >= start && s.date <= end)) ?? null
 }
 
 function RoundButton({ children, label, disabled, onClick }: { children: string; label: string; disabled?: boolean; onClick: () => void }): React.JSX.Element {

@@ -30,8 +30,13 @@ export interface PlannerRequest {
   benchmarkRun: Run | null
   forecast: Forecast[]
   revertedChangeSets: ChangeSet[]
-  imagePath?: string
+  /** Why this run is happening, so the planner knows where to look. */
+  trigger?: RefreshTrigger[]
+  /** Screenshots to read (parse_screenshot only). */
+  imagePaths?: string[]
 }
+
+export type RefreshTrigger = 'manual' | 'scheduled' | 'run_logged' | 'run_deleted' | 'goal_changed' | 'settings_changed' | 'benchmark_changed'
 
 /** A session as the skill writes it: no status, id only when it continues an existing session. */
 export type PlannedSession = Omit<Session, 'status' | 'id'> & { id?: string }
@@ -43,6 +48,9 @@ export interface PlannerChange {
 }
 
 export interface ParsedRun {
+  /** Which of the request's imagePaths (0-based) show this run. */
+  imageIndexes: number[]
+  type?: 'easy' | 'tempo' | 'intervals' | 'long' | 'recovery' | 'race' | 'other'
   date?: ISODate
   startTime?: string
   distanceKm?: number
@@ -60,7 +68,7 @@ export interface PlannerResponse {
   prediction?: PredictionTimes
   goalOptions?: GoalOptions
   changes?: PlannerChange[]
-  parsedRun?: ParsedRun
+  parsedRuns?: ParsedRun[]
 }
 
 // ── JSON schemas for --json-schema ──────────────────────
@@ -133,6 +141,8 @@ const CHANGES_SCHEMA = {
 const PARSED_RUN_SCHEMA = {
   type: 'object',
   properties: {
+    imageIndexes: { type: 'array', items: { type: 'integer' } },
+    type: { enum: ['easy', 'tempo', 'intervals', 'long', 'recovery', 'race', 'other'] },
     date: { type: 'string' },
     startTime: { type: 'string' },
     distanceKm: { type: 'number' },
@@ -143,7 +153,7 @@ const PARSED_RUN_SCHEMA = {
     splits: { type: 'array', items: { type: 'number' } },
     unreadable: { type: 'array', items: { type: 'string' } }
   },
-  required: ['unreadable']
+  required: ['imageIndexes', 'unreadable']
 }
 
 export function responseSchema(task: PlannerTask): object {
@@ -153,13 +163,13 @@ export function responseSchema(task: PlannerTask): object {
     prediction: PREDICTION_SCHEMA,
     goalOptions: GOAL_SCHEMA,
     changes: CHANGES_SCHEMA,
-    parsedRun: PARSED_RUN_SCHEMA
+    parsedRuns: { type: 'array', items: PARSED_RUN_SCHEMA }
   }
   const required: Record<PlannerTask, string[]> = {
     build_plan: ['sessions', 'weeks', 'prediction', 'goalOptions', 'changes'],
-    refresh: ['prediction', 'changes'],
+    refresh: ['prediction', 'goalOptions', 'changes'],
     predict: ['prediction', 'goalOptions'],
-    parse_screenshot: ['parsedRun']
+    parse_screenshot: ['parsedRuns']
   }
   return { type: 'object', properties: props, required: required[task] }
 }

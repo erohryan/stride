@@ -1,7 +1,15 @@
 import { contextBridge, ipcRenderer } from 'electron'
-import type { StrideApi } from '@shared/ipc'
+import type { NavigateRequest, StrideApi } from '@shared/ipc'
 import { IPC } from '@shared/ipc'
 import type { AppState } from '@shared/types'
+
+const on =
+  <T,>(channel: string) =>
+  (cb: (v: T) => void): (() => void) => {
+    const listener = (_: unknown, v: T): void => cb(v)
+    ipcRenderer.on(channel, listener)
+    return () => ipcRenderer.removeListener(channel, listener)
+  }
 
 const api: StrideApi = {
   platform: process.platform,
@@ -13,11 +21,16 @@ const api: StrideApi = {
   refresh: () => ipcRenderer.invoke(IPC.refresh),
   undo: (id) => ipcRenderer.invoke(IPC.undo, id),
   searchPlaces: (q) => ipcRenderer.invoke(IPC.searchPlaces, q),
-  onState: (cb) => {
-    const listener = (_: unknown, s: AppState): void => cb(s)
-    ipcRenderer.on(IPC.stateChanged, listener)
-    return () => ipcRenderer.removeListener(IPC.stateChanged, listener)
-  }
+  importScreenshots: (files) => ipcRenderer.invoke(IPC.importScreenshots, files),
+  discardScreenshots: (paths) => ipcRenderer.invoke(IPC.discardScreenshots, paths),
+  parseScreenshots: (paths) => ipcRenderer.invoke(IPC.parseScreenshots, paths),
+  saveRun: (r) => ipcRenderer.invoke(IPC.saveRun, r),
+  deleteRun: (id) => ipcRenderer.invoke(IPC.deleteRun, id),
+  skipSession: (id) => ipcRenderer.invoke(IPC.skipSession, id),
+  setBenchmark: (id) => ipcRenderer.invoke(IPC.setBenchmark, id),
+  saveGoal: (sec) => ipcRenderer.invoke(IPC.saveGoal, sec),
+  onState: on<AppState>(IPC.stateChanged),
+  onNavigate: on<NavigateRequest>(IPC.navigate)
 }
 
 contextBridge.exposeInMainWorld('stride', api)

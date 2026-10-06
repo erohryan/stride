@@ -24,7 +24,9 @@ recentRuns      runs from the last 8 weeks (distanceKm, durationSec, effort 1–
 benchmarkRun    a run the runner marked as representative of their fitness, or null
 forecast        next 7 days, hourly {time, tempC, windKph, windDir, precipPct, condition}
 revertedChangeSets  changes the runner undid; never re-apply the same change for the same forecast
-imagePath       screenshot to read (parse_screenshot only)
+trigger         why this refresh is happening: manual, scheduled, run_logged, run_deleted,
+                goal_changed, settings_changed, benchmark_changed (may list several)
+imagePaths      screenshots to read (parse_screenshot only)
 ```
 
 All data is metric: kilometres, seconds, seconds per km, °C, km/h. Return metric too. Only the `reason` text uses the runner's units.
@@ -48,7 +50,8 @@ If `race.goalSeconds` is 0, plan for the realistic option.
 
 ### refresh
 Look at the plan in light of recent runs, the forecast and the calendar, and adjust only what needs adjusting.
-- Always return a fresh `prediction`.
+- Always return a fresh `prediction` and `goalOptions` (same rules as predict).
+- `trigger` says why you're running; look there first. `goal_changed` means re-pace and re-shape the remaining plan for the new `race.goalSeconds` (keep weeks numbered as they are). `run_logged` / `run_deleted` means compare recent runs with the plan. `scheduled` usually means a weather check.
 - If nothing needs to change, omit `sessions` and `weeks` and return `changes: []`. Prefer this, since stability is a feature.
 - If anything changes, return `sessions` as the **full replacement from today to race day**, keeping the `id` of every session that is the same session (including moved ones), and include `weeks` if any plannedKm changed. Add one `changes` entry per distinct reason, listing every date it touched (both the old and the new date for a move).
 
@@ -60,7 +63,13 @@ Reasons to change:
 Before re-applying anything, check `revertedChangeSets`. If the runner undid a change, don't make the same change again for the same forecast.
 
 ### parse_screenshot
-Read the image at `imagePath` (a screenshot from a watch or a running app such as Strava or Garmin). Return `parsedRun` with what you can read: date (use `today`'s year if the year isn't shown), startTime (HH:MM), distanceKm (convert from miles if shown in miles), durationSec (moving time), avgPaceSecPerKm, avgHr, elevationM (gain), splits (seconds per km, in order; convert mile splits only if km splits are absent). List each field you could not read in `unreadable` using these exact names: `date, startTime, distanceKm, durationSec, avgPaceSecPerKm, avgHr, elevationM, splits`. Never guess a value you can't see. Leave it out and list it as unreadable.
+`imagePaths` lists one or more screenshots the runner dropped in, from a watch or a running app (Strava, Garmin Connect, Apple Fitness, Nike Run Club, Coros, Polar…). Read every image with the Read tool, then return `parsedRuns`: one entry per distinct run.
+
+- **Group images by run.** Several screenshots often show one run: a summary screen, a splits screen, a heart-rate or map screen. Put them in one entry and combine what each shows. Screenshots of different runs (different dates, start times or distances) get separate entries. List each entry's images in `imageIndexes` (0-based positions in `imagePaths`). Every image belongs to exactly one entry; an image that shows no run at all still gets its own entry, with everything unreadable.
+- **Fields:** `date` (YYYY-MM-DD; resolve "Today", "Yesterday" or a weekday name against `today`; use `today`'s year if none is shown), `startTime` (HH:MM, 24-hour), `distanceKm`, `durationSec` (moving time if both moving and elapsed are shown), `avgPaceSecPerKm`, `avgHr`, `elevationM` (gain), `splits` (seconds per km, in order, whole kilometres only; drop a final partial split), and `type` only when the screenshot names it (e.g. "Long Run", "Tempo", "Intervals", "Race", a workout title) or it's obvious from structure such as repeated fast laps.
+- **Units:** convert miles to km (×1.609344) and min/mi paces to sec/km. Only use mile splits as `splits` if no km splits exist, converting each to sec/km.
+- **Accuracy:** read the numbers exactly as shown. Never guess or calculate a value that isn't visible, except that you may derive `avgPaceSecPerKm` from distance and time when only those are shown. List every field you couldn't read in `unreadable`, using exactly these names: `date, startTime, distanceKm, durationSec, avgPaceSecPerKm, avgHr, elevationM, splits`.
+- `plan.sessions` and `recentRuns` are included so you can resolve dates and tell runs apart. Don't change the plan in this task.
 
 ## Training rules (the app rejects plans that break these)
 
