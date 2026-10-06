@@ -1,18 +1,22 @@
 import { app, BrowserWindow, ipcMain, Menu, nativeImage, Tray } from 'electron'
 import { join } from 'path'
 import { IPC } from '@shared/ipc'
-import type { AppState, Profile, Race, RefreshState, Settings } from '@shared/types'
+import type { AppState, Profile, Race, Settings } from '@shared/types'
 import { todayISO } from '@shared/dates'
+import { killAll } from './claude'
 import { Store } from './db'
+import { searchPlaces } from './geo'
+import { Planner } from './planner'
 
 let win: BrowserWindow | null = null
 let tray: Tray | null = null
 let store: Store
+let planner: Planner
 let quitting = false
-const refresh: RefreshState = { running: false, queued: 0, lastRunAt: null, error: null }
 
 function state(): AppState {
-  return { ...store.snapshot(todayISO()), refresh: { ...refresh } }
+  const { running, queued, lastRunAt, error } = planner
+  return { ...store.snapshot(todayISO()), refresh: { running, queued, lastRunAt, error } }
 }
 
 function broadcast(): void {
@@ -44,12 +48,25 @@ function createWindow(): void {
   win.once('ready-to-show', () => win?.show())
 
   // Dev aid: STRIDE_CAPTURE=out.png renders the window to a PNG and exits.
+  // STRIDE_CAPTURE_JS runs in the page first (to click through to a state).
   const capture = process.env.STRIDE_CAPTURE
   if (capture) {
     win.webContents.once('did-finish-load', () =>
       setTimeout(async () => {
+        if (process.env.STRIDE_CAPTURE_JS) {
+          await win!.webContents.executeJavaScript(process.env.STRIDE_CAPTURE_JS)
+          await new Promise((r) => setTimeout(r, Number(process.env.STRIDE_CAPTURE_WAIT ?? 800)))
+        }
+        // macOS stops painting occluded windows; bring it forward and force a fresh frame.
+        win!.show()
+        win!.webContents.invalidate()
+        await new Promise((r) => setTimeout(r, 400))
         const img = await win!.webContents.capturePage()
-        await import('fs').then((fs) => fs.promises.writeFile(capture, img.toPNG()))
+        const text = await win!.webContents.executeJavaScript('document.body.innerText')
+        const fs = await import('fs')
+        await fs.promises.writeFile(capture, img.toPNG())
+        await fs.promises.writeFile(`${capture}.txt`, text)
+        killAll()
         app.exit(0)
       }, 1500)
     )
@@ -98,29 +115,9 @@ function updateTray(s: AppState): void {
   )
 }
 
-// Placeholder until the planner skill lands (stage 2).
 async function runRefresh(): Promise<void> {
-  if (refresh.running) {
-    refresh.queued++
-    broadcast()
-    return
-  }
-  refresh.running = true
-  refresh.error = null
-  broadcast()
-  try {
-    await new Promise((r) => setTimeout(r, 800))
-    refresh.lastRunAt = new Date().toISOString()
-  } catch (e) {
-    refresh.error = e instanceof Error ? e.message : String(e)
-  } finally {
-    refresh.running = false
-    broadcast()
-    if (refresh.queued > 0) {
-      refresh.queued--
-      void runRefresh()
-    }
-  }
+  // Failures are already surfaced through state.refresh.error.
+  await planner.refresh().catch(() => undefined)
 }
 
 function registerIpc(): void {
@@ -132,22 +129,40 @@ function registerIpc(): void {
   ipcMain.handle(IPC.saveSettings, (_, s: Settings) => {
     store.setSettings(s)
     broadcast()
+    if (store.getActiveRace()) void runRefresh()
   })
-  ipcMain.handle(IPC.saveRace, (_, r: Race) => {
+  ipcMain.handle(IPC.saveRace, async (_, r: Race) => {
     store.setActiveRace(r)
     broadcast()
+    await planner.buildPlan()
   })
+  ipcMain.handle(IPC.predict, (_, r: Race) => planner.predict(r))
   ipcMain.handle(IPC.refresh, () => runRefresh())
+  ipcMain.handle(IPC.undo, (_, id: string) => planner.undo(id))
+  ipcMain.handle(IPC.searchPlaces, (_, q: string) => searchPlaces(q))
 }
 
+// Dev aid: keep test data away from the real database.
+if (process.env.STRIDE_DATA_DIR) app.setPath('userData', process.env.STRIDE_DATA_DIR)
+
 app.whenReady().then(() => {
-  store = new Store(join(app.getPath('userData'), 'stride.db'))
+  const data = app.getPath('userData')
+  store = new Store(join(data, 'stride.db'))
+  planner = new Planner({
+    store,
+    skillFile: join(app.getAppPath(), 'skills/stride-planner/SKILL.md'),
+    workDir: join(data, 'planner'),
+    onChange: broadcast
+  })
   registerIpc()
   createWindow()
   createTray()
+  // A build interrupted by quitting picks up where it left off.
+  if (store.getActiveRace() && store.getWeeks().length === 0) void runRefresh()
   app.on('activate', showWindow)
 })
 
 app.on('before-quit', () => {
   quitting = true
+  killAll()
 })

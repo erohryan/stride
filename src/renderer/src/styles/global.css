@@ -195,3 +195,200 @@ textarea {
   background: var(--card);
   border-radius: 26px;
 }
+
+/* Forms (2f / 2h) */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+.field-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.field-label .opt {
+  font-weight: 500;
+  color: var(--faint);
+}
+.input {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--inset);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 13.5px;
+  font-weight: 600;
+  box-shadow: inset 0 0 0 1.5px transparent;
+  transition: box-shadow 0.15s var(--ease);
+}
+.input:focus-within {
+  box-shadow: inset 0 0 0 1.5px var(--apricot);
+}
+.input.invalid {
+  box-shadow: inset 0 0 0 1.5px var(--apricot);
+  background: var(--hero);
+}
+.input input,
+.input select {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-weight: 600;
+  padding: 0;
+  appearance: none;
+}
+.input input::placeholder {
+  color: var(--faint);
+  font-weight: 500;
+}
+.input .suffix {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.input input[type='date']::-webkit-calendar-picker-indicator {
+  opacity: 0.5;
+}
+.input input[type='number']::-webkit-inner-spin-button {
+  display: none;
+}
+.hint {
+  font-size: 12.5px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+.error-text {
+  font-size: 12.5px;
+  color: var(--accent-text);
+  line-height: 1.45;
+}
+
+.segmented {
+  display: inline-flex;
+  gap: 2px;
+  background: var(--muted-fill);
+  padding: 4px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.segmented button {
+  padding: 6px 16px;
+  border-radius: 999px;
+  color: var(--muted);
+  transition: background-color 0.15s var(--ease), color 0.15s var(--ease);
+}
+.segmented button:hover {
+  background: rgba(45, 38, 33, 0.04);
+}
+.segmented button[aria-pressed='true'] {
+  background: var(--ink);
+  color: var(--on-dark);
+}
+
+.day-toggles {
+  display: flex;
+  gap: 8px;
+}
+.day-toggles button {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 13.5px;
+  font-weight: 700;
+  background: var(--card);
+  color: var(--faint);
+  box-shadow: inset 0 0 0 1.5px var(--ring);
+  transition: background-color 0.15s var(--ease), color 0.15s var(--ease);
+}
+.day-toggles button:hover {
+  background: var(--bg);
+}
+.day-toggles button[aria-pressed='true'] {
+  background: var(--ink);
+  color: var(--on-dark);
+}
+.day-toggles button[aria-pressed='true']:hover {
+  background: var(--ink-hover);
+}
+
+.radio-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: var(--inset);
+  text-align: left;
+  width: 100%;
+  transition: background-color 0.15s var(--ease), box-shadow 0.15s var(--ease);
+}
+.radio-row:hover {
+  background: #efe7dc;
+}
+.radio-row[aria-checked='true'] {
+  background: var(--hero);
+  box-shadow: inset 0 0 0 2px var(--apricot);
+}
+.radio-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #d9cdbe;
+  flex: none;
+}
+[aria-checked='true'] > .radio-dot {
+  border: 5px solid var(--ink);
+}
+
+.card-title {
+  font-family: var(--display);
+  font-size: 18px;
+  font-weight: 600;
+}
+.divider {
+  height: 1px;
+  background: var(--divider);
+}
+
+.popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 10;
+  background: var(--card);
+  border-radius: 16px;
+  padding: 6px;
+  box-shadow: 0 0 0 0.5px rgba(60, 40, 20, 0.2), 0 12px 32px rgba(60, 40, 20, 0.14);
+}
+.popover button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 9px 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.popover button:hover,
+.popover button[data-active='true'] {
+  background: var(--bg);
+}
+
+.fade-in {
+  animation: fade-in 0.2s var(--ease);
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}

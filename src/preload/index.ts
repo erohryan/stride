@@ -9,7 +9,10 @@ const api: StrideApi = {
   saveProfile: (p) => ipcRenderer.invoke(IPC.saveProfile, p),
   saveSettings: (s) => ipcRenderer.invoke(IPC.saveSettings, s),
   saveRace: (r) => ipcRenderer.invoke(IPC.saveRace, r),
+  predict: (r) => ipcRenderer.invoke(IPC.predict, r),
   refresh: () => ipcRenderer.invoke(IPC.refresh),
+  undo: (id) => ipcRenderer.invoke(IPC.undo, id),
+  searchPlaces: (q) => ipcRenderer.invoke(IPC.searchPlaces, q),
   onState: (cb) => {
     const listener = (_: unknown, s: AppState): void => cb(s)
     ipcRenderer.on(IPC.stateChanged, listener)
