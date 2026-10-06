@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics><meta name="design_doc_mode" content="canvas"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet"><style>body{margin:0;background:#e8e6e2;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Helvetica,sans-serif;-webkit-font-smoothing:antialiased}a{color:oklch(0.55 0.17 38)}a:hover{color:oklch(0.45 0.17 38)}.dv-turn{padding:44px 48px 36px;scroll-margin-top:16px}.dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 8px}.dv-tid{font:600 10px ui-monospace,Menlo,monospace;padding:3px 7px;background:#1a1a1a;color:#fff;border-radius:4px;text-decoration:none}.dv-tname{font:600 14px/1.2 system-ui,sans-serif;color:#1a1a1a}.dv-opts{display:flex;flex-wrap:wrap;gap:44px;align-items:flex-start}.dv-opt{flex:none;display:flex;flex-direction:column;gap:12px;scroll-margin-top:16px}.dv-oid{font:600 10.5px ui-monospace,Menlo,monospace;padding:3px 7px;background:rgba(0,0,0,.08);color:#1a1a1a;border-radius:5px;text-decoration:none}.dv-olabel{display:flex;align-items:baseline;gap:8px;font:400 12px/1.3 system-ui,sans-serif;color:rgba(0,0,0,.6)}.dv-opt:target .dv-oid{background:#2a78d6;color:#fff}.dv-next{margin:28px 0 0;font:12px/1.5 system-ui,sans-serif;color:rgba(0,0,0,.55)}</style></helmet>
+<section class="dv-turn" id="t2" style="border-bottom:1px solid rgba(0,0,0,.08)">
+<div class="dv-thd"><a class="dv-tid" href="#t2">2</a><span class="dv-tname">Soft &amp; friendly: custom UI, km, Victor Harbour Half Marathon</span></div>
+<p style="margin:0 0 28px;max-width:780px;font-size:13px;line-height:1.55;color:rgba(0,0,0,.6);text-wrap:pretty">Warm cream background, rounded cards, Bricolage Grotesque for numbers and headings, Figtree for UI text. Apricot marks today and key sessions; sky blue is only used for weather changes. Distances are in km by default. Claude stays in the background: the only control is Refresh plan, and weather changes are applied automatically with a short note explaining why. Goal: 1:45:00 (4:58 /km), race on Sun 6 Dec, 61 days out, week 4 of a 12-week plan.</p>
+<div style="font:600 12px system-ui,sans-serif;color:rgba(0,0,0,.5);margin:0 0 14px">Home, in three directions</div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="2a"><div class="dv-olabel"><a class="dv-oid" href="#2a">2a</a>Cards: countdown hero, plan chart, today on the side</div>
+<div style="width:1180px;height:760px;display:flex;flex-direction:column;background:#f6f0e7;border-radius:18px;overflow:hidden;box-shadow:0 0 0 .5px rgba(60,40,20,.25),0 24px 60px rgba(60,40,20,.16);color:#2d2621;font-family:Figtree,sans-serif">
+<div style="height:64px;flex:none;display:flex;align-items:center;gap:16px;padding:0 22px"><div style="display:flex;gap:8px"><div style="width:12px;height:12px;border-radius:50%;background:#ff5f57"></div><div style="width:12px;height:12px;border-radius:50%;background:#febc2e"></div><div style="width:12px;height:12px;border-radius:50%;background:#28c840"></div></div><span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:19px;margin-left:10px;letter-spacing:-.01em">Stride</span><div style="display:flex;gap:2px;margin-left:14px;background:#ede4d8;padding:4px;border-radius:999px"><sc-for list="{{ navHome }}" as="n" hint-placeholder-count="5"><span style="padding:6px 14px;border-radius:999px;font-size:13px;font-weight:600;background:{{ n.bg }};color:{{ n.color }}">{{ n.label }}</span></sc-for></div><div style="margin-left:auto;padding:8px 16px;border-radius:999px;background:#fffdf9;box-shadow:0 1px 2px rgba(60,40,20,.1);font-size:13px;font-weight:600">Refresh plan</div></div>
+<div style="flex:1;display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:18px;padding:4px 22px 22px;min-height:0">
+<div style="display:flex;flex-direction:column;gap:18px;min-height:0">
+<div style="background:oklch(0.92 0.05 60);border-radius:26px;padding:26px 28px;display:flex;flex-direction:column;gap:20px;flex:none">
+<span style="align-self:flex-start;padding:5px 12px;border-radius:999px;background:rgba(255,253,249,.75);font-size:12px;font-weight:600">Half marathon · Sun 6 Dec</span>
+<div style="display:flex;align-items:flex-end;gap:24px">
+<div style="display:flex;flex-direction:column;gap:6px;flex:1;min-width:0"><span style="font-family:'Bricolage Grotesque',sans-serif;font-size:68px;font-weight:700;letter-spacing:-.035em;line-height:.95">61 days</span><span style="font-size:15px;color:#5b4f45">until Victor Harbour Half Marathon</span></div>
+<div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:#7a6e64">Goal</span><span style="font-family:'Bricolage Grotesque',sans-serif;font-size:26px;font-weight:600">1:45:00</span><span style="font-size:12px;color:#7a6e64">4:58 /km</span></div>
+<div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:#7a6e64">Predicted</span><span style="font-family:'Bricolage Grotesque',sans-serif;font-size:26px;font-weight:600;color:oklch(0.5 0.12 45)">1:44:50</span><span style="font-size:12px;color:#7a6e64">On track</span></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px"><div style="display:grid;grid-template-columns:repeat(12,1fr);gap:4px"><sc-for list="{{ kWeeks }}" as="w" hint-placeholder-count="12"><div style="height:8px;border-radius:99px;background:{{ w.prog }}"></div></sc-for></div><span style="font-size:12px;color:#5b4f45">Week 4 of 12 · Base building</span></div>
+</div>
+<div style="background:#fffdf9;border-radius:26px;padding:22px 26px;display:flex;flex-direction:column;gap:12px;flex:1;min-height:0">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-family:'Bricolage Grotesque',sans-serif;font-size:17px;font-weight:600">Weekly distance</span><span style="font-size:12px;color:#7a6e64">Peak 58 km in week 10</span></div>
+<div style="flex:1;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:10px;align-items:end"><sc-for list="{{ kWeeks }}" as="w" hint-placeholder-count="12"><div style="display:flex;flex-direction:column;align-items:center;gap:5px;justify-content:flex-end;height:100%"><span style="font-size:11px;font-weight:600;color:{{ w.num }}">{{ w.km }}</span><div style="width:100%;height:{{ w.h }};background:{{ w.bg }};border-radius:10px"></div><span style="font-size:11px;color:{{ w.num }}">{{ w.label }}</span></div></sc-for></div>
+<div style="display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:10px;font-size:11.5px;font-weight:600;color:#7a6e64">
+<div style="grid-column:1/5;background:oklch(0.92 0.05 60);color:#2d2621;border-radius:99px;padding:4px 10px">Base</div>
+<div style="grid-column:5/9;background:#f1e9de;border-radius:99px;padding:4px 10px">Build</div>
+<div style="grid-column:9/11;background:#f1e9de;border-radius:99px;padding:4px 10px">Peak</div>
+<div style="grid-column:11/13;background:#f1e9de;border-radius:99px;padding:4px 10px">Taper</div>
+</div>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:18px;min-height:0">
+<div style="background:#fffdf9;border-radius:26px;padding:22px;display:flex;flex-direction:column;gap:6px;flex:none">
+<span style="font-size:12px;color:#7a6e64">Today · Tue 6 Oct</span>
+<span style="font-size:14px;font-weight:700;color:oklch(0.5 0.12 45);margin-top:6px">Easy run</span>
+<span style="font-family:'Bricolage Grotesque',sans-serif;font-size:54px;font-weight:700;letter-spacing:-.03em;line-height:1">8 km</span>
+<span style="font-size:13px;color:#5b4f45">5:50 /km · about 47 min</span>
+<span style="align-self:flex-start;margin-top:10px;padding:6px 12px;border-radius:999px;background:#f6f0e7;font-size:12.5px;font-weight:500">19° · Sunny, light breeze</span>
+<div style="margin-top:14px;padding:11px 0;text-align:center;border-radius:999px;background:#2d2621;color:#fffaf3;font-size:13.5px;font-weight:600">Log this run</div>
+</div>
+<div style="background:oklch(0.95 0.025 230);border-radius:22px;padding:18px 20px;display:flex;flex-direction:column;gap:6px;flex:none">
+<span style="font-size:13.5px;font-weight:700;color:oklch(0.45 0.1 235)">Plan adjusted for the heat</span>
+<span style="font-size:13px;line-height:1.5;color:#3d3530;text-wrap:pretty">Thursday is forecast to reach 35°. Your tempo moved to Wednesday, and Thursday is now an easy 6 km. Go before 7 am.</span>
+<span style="font-size:12px;color:#7a6e64;margin-top:2px">Updated 6:02 am · <span style="color:oklch(0.45 0.1 235);font-weight:600">Undo</span></span>
+</div>
+<div style="background:#fffdf9;border-radius:22px;padding:16px 20px;display:flex;flex-direction:column;flex:1;min-height:0">
+<span style="font-family:'Bricolage Grotesque',sans-serif;font-size:15px;font-weight:600;padding-bottom:6px">Coming up</span>
+<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid rgba(60,40,20,.07);font-size:13px"><span style="width:34px;color:#7a6e64">Wed</span><span style="flex:1;font-weight:600;color:oklch(0.5 0.12 45)">Tempo</span><span>10 km</span></div>
+<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid rgba(60,40,20,.07);font-size:13px"><span style="width:34px;color:#7a6e64">Thu</span><span style="flex:1">Easy · early</span><span>6 km</span></div>
+<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid rgba(60,40,20,.07);font-size:13px"><span style="width:34px;color:#7a6e64">Sat</span><span style="flex:1">Recovery</span><span>5 km</span></div>
+<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid rgba(60,40,20,.07);font-size:13px"><span style="width:34px;color:#7a6e64">Sun</span><span style="flex:1;font-weight:600;color:oklch(0.5 0.12 45)">Long run</span><span>16 km</span></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="2b"><div class="dv-olabel"><a class="dv-oid" href="#2b">2b</a>Journey: the 12 weeks as a road to race day</div>
+<div style="width:1180px;height:760px;display:flex;flex-direction:column;background:#f6f0e7;border-radius:18px;overflow:hidden;box-shadow:0 0 0 .5px rgba(60,40,20,.25),0 24px 60px rgba(60,40,20,.16);color:#2d2621;font-family:Figtree,sans-serif">
+<div style="height:64px;flex:none;display:flex;align-items:center;gap:16px;padding:0 22px"><div style="display:flex;gap:8px"><div style="width:12px;height:12px;border-radius:50%;background:#ff5f57"></div><div style="width:12px;height:12px;border-radius:50%;background:#febc2e"></div><div style="width:12px;height:12px;border-radius:50%;background:#28c840"></div></div><span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:19px;margin-left:10px;letter-spacing:-.01em">Stride</span><div style="display:flex;gap:2px;margin-left:14px;background:#ede4d8;padding:4px;border-radius:999px"><sc-for list="{{ navHome }}" as="n" hint-placeholder-count="5"><span style="padding:6px 14px;border-radius:999px;font-size:13px;font-weight:600;background:{{ n.bg }};color:{{ n.color }}">{{ n.label }}</span></sc-for></div><div style="margin-left:auto;padding:8px 16px;border-radius:999px;background:#fffdf9;box-shadow:0 1px 2px rgba(60,40,20,.1);font-size:13px;font-weight:600">Refresh plan</div></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:18px;padding:8px 30px 26px;min-height:0">
+<div style="display:flex;align-items:flex-end;gap:30px;flex:none">
+<div style="display:flex;flex-direction:column;gap:6px;flex:1;min-width:0"><span style="font-size:13px;color:#7a6e64">Tuesday 6 October · Week 4 of 12</span><span style="font-family:'Bricolage Grotesque',sans-serif;font-size:44px;font-weight:700;letter-spacing:-.03em;line-height:1">8 km easy today</span></div>
+<div style="display:flex;gap:8px"><span style="padding:8px 14px;border-radius:999px;background:#fffdf9;font-size:13px"><span style="color:#7a6e64">Goal</span> <strong style="font-weight:700">1:45:00</strong></span><span style="padding:8px 14px;border-radius:999px;background:oklch(0.92 0.05 60);font-size:13px"><span style="color:#5b4f45">Predicted</span> <strong style="font-weight:700">1:44:50</strong></span></div>
+</div>
+<div style="background:#fffdf9;border-radius:28px;padding:24px 28px 20px;display:flex;flex-direction:column;gap:18px;flex:none">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-family:'Bricolage Grotesque',sans-serif;font-size:17px;font-weight:600">Road to Victor Harbour</span><span style="font-size:12.5px;color:#7a6e64">61 days · 442 km to go</span></div>
+<div style="position:relative;display:flex;align-items:center;justify-content:space-between;height:80px">
+<div style="position:absolute;left:20px;right:60px;top:50%;height:0;border-top:2.5px dashed #e3d8ca"></div>
+<sc-for list="{{ kWeeks }}" as="w" hint-placeholder-count="12"><div style="position:relative;width:{{ w.size }};height:{{ w.size }};border-radius:50%;display:grid;place-items:center;background:{{ w.sBg }};color:{{ w.sColor }};border:{{ w.sBorder }};box-shadow:{{ w.sRing }};font-size:12.5px;font-weight:700">{{ w.km }}</div></sc-for>
+<div style="position:relative;padding:10px 14px;border-radius:18px;background:#2d2621;color:#fffaf3;display:flex;flex-direction:column;align-items:center;gap:1px"><span style="font-size:11px;opacity:.75">6 Dec</span><span style="font-family:'Bricolage Grotesque',sans-serif;font-size:16px;font-weight:700">21.1</span></div>
+</div>
+<div style="display:grid;grid-template-columns:4fr 4fr 2fr 2fr 1.2fr;gap:10px;font-size:11.5px;font-weight:600;color:#7a6e64">
+<span style="background:oklch(0.92 0.05 60);color:#2d2621;border-radius:99px;padding:4px 10px">Base · you are here</span><span style="background:#f1e9de;border-radius:99px;padding:4px 10px">Build</span><span style="background:#f1e9de;border-radius:99px;padding:4px 10px">Peak</span><span style="background:#f1e9de;border-radius:99px;padding:4px 10px">Taper</span><span></span>
+</div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px;flex:1;min-height:0">
+<sc-for list="{{ kDays }}" as="d" hint-placeholder-count="7"><div style="border-radius:22px;background:{{ d.tileBg }};border:{{ d.tileBorder }};padding:14px 14px;display:flex;flex-direction:column;gap:4px;opacity:{{ d.op }}"><span style="font-size:12px;color:#7a6e64">{{ d.dow }} {{ d.date }}</span><span style="font-size:13px;font-weight:700;color:{{ d.typeColor }};margin-top:8px">{{ d.type }}</span><span style="font-family:'Bricolage Grotesque',sans-serif;font-size:26px;font-weight:700;letter-spacing:-.02em">{{ d.km }}</span><span style="font-size:12px;color:#7a6e64">{{ d.pace }}</span><div style="margin-top:auto;display:flex;flex-direction:column;gap:4px"><span style="font-size:11.5px;color:{{ d.wxColor }};line-height:1.35">{{ d.wx }}</span><span style="font-size:11px;font-weight:700;color:{{ d.tagColor }}">{{ d.tag }}</span></div></div></sc-for>
+</div>
+<div style="flex:none;background:oklch(0.95 0.025 230);border-radius:999px;padding:12px 20px;display:flex;align-items:center;gap:12px;font-size:13px"><span style="font-weight:700;color:oklch(0.45 0.1 235)">Adjusted for the heat</span><span style="color:#3d3530;flex:1">Thursday hits 35°, so your tempo moved to Wednesday and Thursday is an easy 6 km before 7 am.</span><span style="color:oklch(0.45 0.1 235);font-weight:600">Undo</span></div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="2c"><div class="dv-olabel"><a class="dv-oid" href="#2c">2c</a>Today first: one big run card, week as a list</div>
+<div style="width:1180px;height:760px;display:flex;flex-direction:column;background:#f6f0e7;border-radius:18px;overflow:hidden;box-shadow:0 0 0 .5px rgba(60,40,20,.25),0 24px 60px rgba(60,40,20,.16);color:#2d2621;font-family:Figtree,sans-serif">
+<div style="height:64px;flex:none;display:flex;align-items:center;gap:16px;padding:0 22px"><div style="display:flex;gap:8px"><div style="width:12px;height:12px;border-radius:50%;background:#ff5f57"></div><div style="width:12px;height:12px;border-radius:50%;background:#febc2e"></div><div style="width:12px;height:12px;border-radius:50%;background:#28c840"></div></div><span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:19px;margin-left:10px;letter-spacing:-.01em">Stride</span><div style="display:flex;gap:2px;margin-left:14px;background:#ede4d8;padding:4px;border-radius:999px"><sc-for list="{{ navHome }}" as="n" hint-placeholder-count="5"><span style="padding:6px 14px;border-radius:999px;font-size:13px;font-weight:600;background:{{ n.bg }};color:{{ n.color }}">{{ n.label }}</span></sc-for></div><div style="margin-left:auto;padding:8px 16px;border-radius:999px;background:#fffdf9;box-shadow:0 1px 2px rgba(60,40,20,.1);font-size:13px;font-weight:600">Refresh plan</div></div>
+<div style="flex:1;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:18px;padding:4px 22px 22px;min-height:0">
+<div style="background:oklch(0.86 0.08 55);border-radius:32px;padding:34px 36px;display:flex;flex-direction:column;gap:8px">
+<span style="font-size:14px;font-weight:600;color:#5b4f45">Tuesday 6 October</span>
+<span style="font-size:15px;font-weight:700;margin-top:26px">Today's run · Easy</span>
+<span style="font-family:'Bricolage Grotesque',sans-serif;font-size:150px;font-weight:700;letter-spacing:-.05em;line-height:.9">8 km</span>
+<div style="display:flex;gap:28px;margin-top:18px">
+<div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:#5b4f45">Pace</span><span style="font-family:'Bricolage Grotesque',sans-serif;font-size:26px;font-weight:600">5:50 /km</span></div>
+<div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:#5b4f45">Time</span><span style="font-family:'Bricolage Grotesque',sans-serif;font-size:26px;font-weight:600">~47 min</span></div>
+<div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:#5b4f45">Weather</span><span style="font-family:'Bricolage Grotesque',sans-serif;font-size:26px;font-weight:600">19° sunny</span></div>
+</div>
+<span style="font-size:14px;line-height:1.5;color:#3d3530;margin-top:14px;max-width:440px;text-wrap:pretty">Conversational effort. Keep it relaxed so you're fresh for tomorrow's tempo.</span>
+<div style="margin-top:auto;display:flex;gap:10px"><div style="padding:13px 24px;border-radius:999px;background:#2d2621;color:#fffaf3;font-size:14px;font-weight:600">Log this run</div><div style="padding:13px 22px;border-radius:999px;background:rgba(255,253,249,.6);font-size:14px;font-weight:600">Move to another day</div></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:18px;min-height:0">
+<div style="background:#fffdf9;border-radius:26px;padding:22px 24px;display:flex;align-items:center;gap:22px;flex:none">
+<div style="width:118px;height:118px;border-radius:50%;background:conic-gradient(oklch(0.72 0.13 50) 0 33%, #efe6da 33% 100%);display:grid;place-items:center;flex:none"><div style="width:92px;height:92px;border-radius:50%;background:#fffdf9;display:flex;flex-direction:column;align-items:center;justify-content:center"><span style="font-family:'Bricolage Grotesque',sans-serif;font-size:28px;font-weight:700;line-height:1">61</span><span style="font-size:11px;color:#7a6e64">days to go</span></div></div>
+<div style="display:flex;flex-direction:column;gap:10px;min-width:0"><span style="font-family:'Bricolage Grotesque',sans-serif;font-size:17px;font-weight:600;line-height:1.2">Victor Harbour Half Marathon</span><span style="font-size:12.5px;color:#7a6e64">Sun 6 Dec · Week 4 of 12</span><div style="display:flex;gap:8px"><span style="padding:5px 11px;border-radius:999px;background:#f6f0e7;font-size:12px">Goal <strong>1:45:00</strong></span><span style="padding:5px 11px;border-radius:999px;background:oklch(0.92 0.05 60);font-size:12px">Predicted <strong>1:44:50</strong></span></div></div>
+</div>
+<div style="background:#fffdf9;border-radius:26px;padding:18px 20px;display:flex;flex-direction:column;gap:2px;flex:1;min-height:0">
+<div style="display:flex;justify-content:space-between;align-items:baseline;padding:0 8px 8px"><span style="font-family:'Bricolage Grotesque',sans-serif;font-size:16px;font-weight:600">This week</span><span style="font-size:12px;color:#7a6e64">45 km</span></div>
+<sc-for list="{{ kDays }}" as="d" hint-placeholder-count="7"><div style="display:grid;grid-template-columns:10px 64px 1fr auto;align-items:center;gap:10px;padding:9px 10px;border-radius:14px;background:{{ d.rowBg }};opacity:{{ d.op }};font-size:13px"><div style="width:9px;height:9px;border-radius:50%;background:{{ d.dot }}"></div><span style="color:#7a6e64">{{ d.dow }} {{ d.date }}</span><div style="display:flex;flex-direction:column;gap:1px;min-width:0"><span style="font-weight:600;color:{{ d.typeColor }}">{{ d.type }}</span><span style="font-size:11.5px;color:{{ d.wxColor }}">{{ d.wx }}</span></div><span style="font-weight:600">{{ d.km }}</span></div></sc-for>
+</div>
+<div style="background:oklch(0.95 0.025 230);border-radius:22px;padding:14px 18px;font-size:12.5px;line-height:1.5;color:#3d3530;flex:none"><strong style="color:oklch(0.45 0.1 235)">Adjusted for the heat.</strong> Thursday hits 35°, so the tempo moved to Wednesday. <span style="color:oklch(0.45 0.1 235);font-weight:600">Undo</span></div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+<div style="font:600 12px system-ui,sans-serif;color:rgba(0,0,0,.5);margin:44px 0 14px">Other screens, in the <a class="dv-oid" href="#2a">2a</a> style</div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="2d"><div class="dv-olabel"><a class="dv-oid" href="#2d">2d</a>Race: predicted times and goal setting</div>
+<div style="width:1180px;height:760px;display:flex;flex-direction:column;background:#f6f0e7;border-radius:18px;overflow:hidden;box-shadow:0 0 0 .5px rgba(60,40,20,.25),0 24px 60px rgba(60,40,20,.16);color:#2d2621;font-family:Figtree,sans-serif">
+<div style="height:64px;flex:none;display:flex;align-items:center;gap:16px;padding:0 22px"><div style="display:flex;gap:8px"><div style="width:12px;height:12px;border-radius:50%;background:#ff5f57"></div><div style="width:12px;height:12px;border-radius:50%;background:#febc2e"></div><div style="width:12px;height:12px;border-radius:50%;background:#28c840"></div></div><span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:19px;margin-left:10px;letter-spacing:-.01em">Stride</span><div style="display:flex;gap:2px;margin-left:14px;background:#ede4d8;padding:4px;border-radius:999px"><sc-for list="{{ navRace }}" as="n" hint-placeholder-count="5"><span style="padding:6px 14px;border-radius:999px;font-size:13px;font-weight:600;background:{{ n.bg }};color:{{ n.color }}">{{ n.label }}</span></sc-for></div><div style="margin-left:auto;padding:8px 16px;border-radius:999px;background:#fffdf9;box-shadow:0 1px 2px rgba(60,40,20,.1);font-size:13px;font-weight:600">Refresh plan</div></div>
+<div style="flex:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;padding:4px 22px 22px;min-height:0">
+<div style="display:flex;flex-direction:column;gap:18px;min-height:0">
+<div style="background:#fffdf9;border-radius:26px;padding:24px 26px;display:flex;flex-direction:column;gap:16px;flex:none">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:600">Predicted race times</span><span style="font-size:12px;color:#7a6e64">From your last 6 weeks</span></div>
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
+<div style="background:#f6f0e7;border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:#7a6e64">5 km</span><span style="font-family:'Bricolage Grotesque',sans-serif;font-size:28px;font-weight:700">22:35</span><span style="font-size:12px;color:#7a6e64">4:31 /km</span></div>
+<div style="background:#f6f0e7;border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:#7a6e64">10 km</span><span style="font-family:'Bricolage Grotesque',sans-serif;font-size:28px;font-weight:700">47:05</span><span style="font-size:12px;color:#7a6e64">4:43 /km</span></div>
+<div style="background:oklch(0.92 0.05 60);border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:#5b4f45;font-weight:600">Half marathon · your race</span><span style="font-family:'Bricolage Grotesque',sans-serif;font-size:28px;font-weight:700">1:44:50</span><span style="font-size:12px;color:#5b4f45">4:58 /km</span></div>
+<div style="background:#f6f0e7;border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:#7a6e64">Marathon</span><span style="font-family:'Bricolage Grotesque',sans-serif;font-size:28px;font-weight:700">3:40:10</span><span style="font-size:12px;color:#7a6e64">5:13 /km</span></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;justify-content:space-between;font-size:12px"><span style="font-weight:600">Half marathon prediction</span><span style="color:oklch(0.5 0.12 45);font-weight:600">2:40 faster since 7 Sep</span></div>
+<div style="display:flex;align-items:flex-end;gap:6px;height:56px"><div style="flex:1;height:30%;background:#efe6da;border-radius:8px"></div><div style="flex:1;height:42%;background:#efe6da;border-radius:8px"></div><div style="flex:1;height:55%;background:#efe6da;border-radius:8px"></div><div style="flex:1;height:68%;background:oklch(0.84 0.06 55);border-radius:8px"></div><div style="flex:1;height:84%;background:oklch(0.84 0.06 55);border-radius:8px"></div><div style="flex:1;height:100%;background:oklch(0.72 0.13 50);border-radius:8px"></div></div>
+<div style="display:flex;justify-content:space-between;font-size:11px;color:#a39789"><span>1:47:30</span><span>1:44:50 now</span></div>
+</div>
+</div>
+<div style="background:#fffdf9;border-radius:26px;padding:20px 24px;display:flex;flex-direction:column;gap:12px;flex:1;min-height:0">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-family:'Bricolage Grotesque',sans-serif;font-size:16px;font-weight:600">Improve the prediction</span><span style="font-size:12px;color:#7a6e64">Add a recent hard effort</span></div>
+<div style="display:flex;gap:12px;flex:1;min-height:0">
+<div style="flex:1;border-radius:18px;border:2px dashed #e3d8ca;background:repeating-linear-gradient(135deg,#f6efe5 0 8px,#fbf6ef 8px 16px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:14px;text-align:center"><span style="font:500 11px ui-monospace,Menlo,monospace;color:#7a6e64">drop a screenshot of a good run</span><span style="font-size:11.5px;color:#a39789">Watch summary, Strava or a race result</span></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:8px;justify-content:center"><span style="font-size:12px;color:#7a6e64">Currently using</span><div style="background:#f6f0e7;border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:2px"><span style="font-size:13px;font-weight:700">10 km time trial</span><span style="font-size:12px;color:#7a6e64">Sun 27 Sep · 47:10 · 4:43 /km</span></div><span style="font-size:12.5px;font-weight:600;color:oklch(0.5 0.12 45)">Choose from history</span></div>
+</div>
+</div>
+</div>
+<div style="background:#fffdf9;border-radius:26px;padding:24px 26px;display:flex;flex-direction:column;gap:18px;min-height:0">
+<div style="display:flex;flex-direction:column;gap:4px"><span style="font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:600">Your goal</span><span style="font-size:13px;color:#7a6e64">Victor Harbour Half Marathon · Sun 6 Dec · 21.1 km</span></div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:18px;background:#f6f0e7"><div style="width:18px;height:18px;border-radius:50%;border:2px solid #d9cdbe;flex:none"></div><div style="flex:1;display:flex;flex-direction:column;gap:1px"><span style="font-size:13.5px;font-weight:700">Comfortable</span><span style="font-size:12px;color:#7a6e64">Finish strong, with room to spare</span></div><div style="display:flex;flex-direction:column;align-items:flex-end"><span style="font-family:'Bricolage Grotesque',sans-serif;font-size:22px;font-weight:700">1:48:00</span><span style="font-size:11.5px;color:#7a6e64">5:07 /km</span></div></div>
+<div style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:18px;background:oklch(0.92 0.05 60);box-shadow:inset 0 0 0 2px oklch(0.72 0.13 50)"><div style="width:18px;height:18px;border-radius:50%;border:5px solid #2d2621;flex:none;box-sizing:border-box"></div><div style="flex:1;display:flex;flex-direction:column;gap:1px"><span style="font-size:13.5px;font-weight:700">Realistic · matches your prediction</span><span style="font-size:12px;color:#5b4f45">Even pacing, close to race effort in training</span></div><div style="display:flex;flex-direction:column;align-items:flex-end"><span style="font-family:'Bricolage Grotesque',sans-serif;font-size:22px;font-weight:700">1:45:00</span><span style="font-size:11.5px;color:#5b4f45">4:58 /km</span></div></div>
+<div style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:18px;background:#f6f0e7"><div style="width:18px;height:18px;border-radius:50%;border:2px solid #d9cdbe;flex:none"></div><div style="flex:1;display:flex;flex-direction:column;gap:1px"><span style="font-size:13.5px;font-weight:700">Stretch</span><span style="font-size:12px;color:#7a6e64">Needs a strong build phase and a good day</span></div><div style="display:flex;flex-direction:column;align-items:flex-end"><span style="font-family:'Bricolage Grotesque',sans-serif;font-size:22px;font-weight:700">1:42:30</span><span style="font-size:11.5px;color:#7a6e64">4:51 /km</span></div></div>
+<div style="display:flex;align-items:center;gap:14px;padding:12px 16px;border-radius:18px;border:1.5px solid #ede4d8"><div style="width:18px;height:18px;border-radius:50%;border:2px solid #d9cdbe;flex:none"></div><span style="flex:1;font-size:13.5px;font-weight:700">My own time</span><span style="padding:6px 12px;border-radius:10px;background:#f6f0e7;font-family:'Bricolage Grotesque',sans-serif;font-size:15px;font-weight:600;color:#a39789">h:mm:ss</span></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<span style="font-size:12px;font-weight:600;color:#7a6e64">Race-day pacing at 1:45:00</span>
+<div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px">
+<div style="background:#f6f0e7;border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:2px"><span style="font-size:11px;color:#7a6e64">0–5 km</span><span style="font-size:14px;font-weight:700">5:02</span></div>
+<div style="background:#f6f0e7;border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:2px"><span style="font-size:11px;color:#7a6e64">5–15 km</span><span style="font-size:14px;font-weight:700">4:58</span></div>
+<div style="background:#f6f0e7;border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:2px"><span style="font-size:11px;color:#7a6e64">15–20 km</span><span style="font-size:14px;font-weight:700">4:55</span></div>
+<div style="background:#f6f0e7;border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:2px"><span style="font-size:11px;color:#7a6e64">Last 1.1</span><span style="font-size:14px;font-weight:700">4:45</span></div>
+</div>
+</div>
+<div style="margin-top:auto;display:flex;align-items:center;gap:12px"><span style="flex:1;font-size:12px;color:#7a6e64;line-height:1.45">Changing your goal rebuilds the remaining 8 weeks.</span><div style="padding:11px 22px;border-radius:999px;background:#2d2621;color:#fffaf3;font-size:13.5px;font-weight:600">Save goal</div></div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="2e"><div class="dv-olabel"><a class="dv-oid" href="#2e">2e</a>This week: weather change auto-applied, session detail</div>
+<div style="width:1180px;height:760px;display:flex;flex-direction:column;background:#f6f0e7;border-radius:18px;overflow:hidden;box-shadow:0 0 0 .5px rgba(60,40,20,.25),0 24px 60px rgba(60,40,20,.16);color:#2d2621;font-family:Figtree,sans-serif">
+<div style="height:64px;flex:none;display:flex;align-items:center;gap:16px;padding:0 22px"><div style="display:flex;gap:8px"><div style="width:12px;height:12px;border-radius:50%;background:#ff5f57"></div><div style="width:12px;height:12px;border-radius:50%;background:#febc2e"></div><div style="width:12px;height:12px;border-radius:50%;background:#28c840"></div></div><span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:19px;margin-left:10px;letter-spacing:-.01em">Stride</span><div style="display:flex;gap:2px;margin-left:14px;background:#ede4d8;padding:4px;border-radius:999px"><sc-for list="{{ navWeekK }}" as="n" hint-placeholder-count="5"><span style="padding:6px 14px;border-radius:999px;font-size:13px;font-weight:600;background:{{ n.bg }};color:{{ n.color }}">{{ n.label }}</span></sc-for></div><div style="margin-left:auto;padding:8px 16px;border-radius:999px;background:#fffdf9;box-shadow:0 1px 2px rgba(60,40,20,.1);font-size:13px;font-weight:600">Refresh plan</div></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;padding:4px 22px 22px;min-height:0">
+<div style="flex:none;display:flex;align-items:baseline;gap:14px;padding:0 6px"><span style="font-family:'Bricolage Grotesque',sans-serif;font-size:30px;font-weight:700;letter-spacing:-.02em">5 – 11 October</span><span style="font-size:13px;color:#7a6e64">Week 4 of 12 · 45 km</span><div style="margin-left:auto;display:flex;gap:6px"><span style="width:32px;height:32px;border-radius:50%;background:#fffdf9;display:grid;place-items:center;font-size:14px">‹</span><span style="width:32px;height:32px;border-radius:50%;background:#fffdf9;display:grid;place-items:center;font-size:14px">›</span></div></div>
+<div style="flex:none;background:oklch(0.95 0.025 230);border-radius:22px;padding:16px 20px;display:flex;gap:18px;align-items:center">
+<div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:0"><span style="font-size:14px;font-weight:700;color:oklch(0.45 0.1 235)">We swapped Wednesday and Thursday</span><span style="font-size:13px;line-height:1.5;color:#3d3530;text-wrap:pretty">Thursday is forecast to reach 35° with a hot northerly. Wednesday is 22° and calm, so it gets the tempo. Thursday is now an easy 6 km, best done before 7 am. Your weekly total is unchanged.</span></div>
+<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex:none"><span style="font-size:12px;color:#7a6e64">Applied 6:02 am</span><span style="padding:7px 14px;border-radius:999px;background:#fffdf9;font-size:12.5px;font-weight:600;color:oklch(0.45 0.1 235)">Undo</span></div>
+</div>
+<div style="flex:1;display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:16px;min-height:0">
+<div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px;min-height:0">
+<sc-for list="{{ kDays }}" as="d" hint-placeholder-count="7"><div style="border-radius:22px;background:{{ d.tileBg }};border:{{ d.tileBorder }};padding:14px;display:flex;flex-direction:column;gap:4px;opacity:{{ d.op }}"><span style="font-size:12px;color:#7a6e64">{{ d.dow }} {{ d.date }}</span><span style="font-size:13px;font-weight:700;color:{{ d.typeColor }};margin-top:10px">{{ d.type }}</span><span style="font-family:'Bricolage Grotesque',sans-serif;font-size:26px;font-weight:700;letter-spacing:-.02em">{{ d.km }}</span><span style="font-size:12px;color:#7a6e64">{{ d.pace }}</span><div style="margin-top:auto;display:flex;flex-direction:column;gap:4px"><span style="font-size:11.5px;color:{{ d.wxColor }};line-height:1.35">{{ d.wx }}</span><span style="font-size:11px;font-weight:700;color:{{ d.tagColor }}">{{ d.tag }}</span></div></div></sc-for>
+</div>
+<div style="background:#fffdf9;border-radius:24px;padding:20px 22px;display:flex;flex-direction:column;gap:16px;min-height:0">
+<div style="display:flex;flex-direction:column;gap:3px"><span style="font-size:12px;color:#7a6e64">Wed 7 Oct</span><span style="font-family:'Bricolage Grotesque',sans-serif;font-size:22px;font-weight:700">Tempo · 10 km</span><span style="font-size:12.5px;color:#7a6e64">About 54 min</span></div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="display:flex;justify-content:space-between;padding:10px 12px;border-radius:12px;background:#f6f0e7;font-size:13px"><span>Warm-up</span><span style="color:#7a6e64">2 km @ 6:00</span></div>
+<div style="display:flex;justify-content:space-between;padding:10px 12px;border-radius:12px;background:oklch(0.92 0.05 60);font-size:13px;font-weight:700"><span>Tempo</span><span>6 km @ 4:50</span></div>
+<div style="display:flex;justify-content:space-between;padding:10px 12px;border-radius:12px;background:#f6f0e7;font-size:13px"><span>Cool-down</span><span style="color:#7a6e64">2 km @ 6:05</span></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<span style="font-size:12px;font-weight:600;color:#7a6e64">Forecast · Victor Harbor</span>
+<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:5px;text-align:center"><sc-for list="{{ kHourly }}" as="h" hint-placeholder-count="5"><div style="display:flex;flex-direction:column;gap:3px;padding:9px 0;border-radius:12px;background:{{ h.bg }}"><span style="font-size:10.5px;color:#7a6e64">{{ h.t }}</span><span style="font-size:14px;font-weight:700">{{ h.temp }}</span></div></sc-for></div>
+<span style="font-size:12.5px;color:oklch(0.45 0.1 235);font-weight:600">Best window 6–8 am, light wind</span>
+</div>
+<div style="margin-top:auto;padding:11px 0;text-align:center;border-radius:999px;background:#2d2621;color:#fffaf3;font-size:13.5px;font-weight:600">Log this run</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="2f"><div class="dv-olabel"><a class="dv-oid" href="#2f">2f</a>History + log a run manually (full detail)</div>
+<div style="width:1180px;height:760px;display:flex;flex-direction:column;background:#f6f0e7;border-radius:18px;overflow:hidden;box-shadow:0 0 0 .5px rgba(60,40,20,.25),0 24px 60px rgba(60,40,20,.16);color:#2d2621;font-family:Figtree,sans-serif">
+<div style="height:64px;flex:none;display:flex;align-items:center;gap:16px;padding:0 22px"><div style="display:flex;gap:8px"><div style="width:12px;height:12px;border-radius:50%;background:#ff5f57"></div><div style="width:12px;height:12px;border-radius:50%;background:#febc2e"></div><div style="width:12px;height:12px;border-radius:50%;background:#28c840"></div></div><span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:19px;margin-left:10px;letter-spacing:-.01em">Stride</span><div style="display:flex;gap:2px;margin-left:14px;background:#ede4d8;padding:4px;border-radius:999px"><sc-for list="{{ navHist }}" as="n" hint-placeholder-count="5"><span style="padding:6px 14px;border-radius:999px;font-size:13px;font-weight:600;background:{{ n.bg }};color:{{ n.color }}">{{ n.label }}</span></sc-for></div><div style="margin-left:auto;padding:8px 16px;border-radius:999px;background:#fffdf9;box-shadow:0 1px 2px rgba(60,40,20,.1);font-size:13px;font-weight:600">Refresh plan</div></div>
+<div style="flex:1;display:grid;grid-template-columns:400px minmax(0,1fr);gap:18px;padding:4px 22px 22px;min-height:0">
+<div style="background:#fffdf9;border-radius:26px;padding:20px 18px;display:flex;flex-direction:column;gap:4px;min-height:0">
+<div style="display:flex;justify-content:space-between;align-items:baseline;padding:0 6px 10px"><span style="font-family:'Bricolage Grotesque',sans-serif;font-size:18px;font-weight:600">Your runs</span><span style="font-size:12px;color:#7a6e64">September – October</span></div>
+<sc-for list="{{ kRuns }}" as="r" hint-placeholder-count="6"><div style="display:flex;align-items:center;gap:12px;padding:11px 10px;border-radius:16px;border-top:1px solid rgba(60,40,20,.06)"><div style="flex:1;display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-size:13.5px;font-weight:700">{{ r.type }}</span><span style="font-size:12px;color:#7a6e64">{{ r.date }} · {{ r.time }} · {{ r.pace }}</span></div><span style="padding:3px 9px;border-radius:999px;font-size:10.5px;font-weight:600;background:{{ r.srcBg }};color:{{ r.srcColor }}">{{ r.src }}</span><span style="font-family:'Bricolage Grotesque',sans-serif;font-size:16px;font-weight:700;width:62px;text-align:right">{{ r.dist }}</span></div></sc-for>
+</div>
+<div style="background:#fffdf9;border-radius:26px;padding:22px 26px;display:flex;flex-direction:column;gap:16px;min-height:0">
+<div style="display:flex;align-items:center;gap:14px"><span style="font-family:'Bricolage Grotesque',sans-serif;font-size:20px;font-weight:700">Log a run</span><div style="margin-left:auto;display:flex;gap:2px;background:#f1e9de;padding:4px;border-radius:999px;font-size:12.5px;font-weight:600"><span style="padding:6px 14px;border-radius:999px;background:#2d2621;color:#fffaf3">Enter manually</span><span style="padding:6px 14px;border-radius:999px;color:#7a6e64">From screenshot</span></div></div>
+<div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px">
+<div style="display:flex;flex-direction:column;gap:5px"><span style="font-size:11.5px;font-weight:600;color:#7a6e64">Date</span><div style="padding:10px 12px;border-radius:12px;background:#f6f0e7;font-size:13.5px">Tue 6 Oct</div></div>
+<div style="display:flex;flex-direction:column;gap:5px"><span style="font-size:11.5px;font-weight:600;color:#7a6e64">Type</span><div style="padding:10px 12px;border-radius:12px;background:#f6f0e7;font-size:13.5px">Easy  ⌄</div></div>
+<div style="display:flex;flex-direction:column;gap:5px"><span style="font-size:11.5px;font-weight:600;color:#7a6e64">Distance</span><div style="padding:10px 12px;border-radius:12px;background:#f6f0e7;font-size:13.5px;font-weight:600">8.2 <span style="color:#a39789;font-weight:400">km</span></div></div>
+<div style="display:flex;flex-direction:column;gap:5px"><span style="font-size:11.5px;font-weight:600;color:#7a6e64">Time</span><div style="padding:10px 12px;border-radius:12px;background:#f6f0e7;font-size:13.5px;font-weight:600">46:58</div></div>
+</div>
+<span style="font-size:12.5px;color:#5b4f45">Average pace <strong style="font-weight:700">5:44 /km</strong>, 6 s faster than planned</span>
+<div style="display:flex;flex-direction:column;gap:8px"><div style="display:flex;justify-content:space-between;font-size:11.5px;font-weight:600;color:#7a6e64"><span>Effort</span><span>6 · Comfortably hard</span></div><div style="display:grid;grid-template-columns:repeat(10,1fr);gap:6px"><sc-for list="{{ kEffort }}" as="e" hint-placeholder-count="10"><div style="height:34px;border-radius:10px;display:grid;place-items:center;font-size:13px;font-weight:700;background:{{ e.bg }};color:{{ e.color }};box-shadow:inset 0 0 0 1.5px #ede4d8">{{ e.n }}</div></sc-for></div></div>
+<div style="display:flex;flex-direction:column;gap:8px"><div style="display:flex;justify-content:space-between;font-size:11.5px;font-weight:600;color:#7a6e64"><span>Splits (optional)</span><span style="color:oklch(0.5 0.12 45)">Paste from clipboard</span></div><div style="display:grid;grid-template-columns:repeat(6,minmax(0,1fr)) auto;gap:6px"><sc-for list="{{ kSplits }}" as="s" hint-placeholder-count="6"><div style="padding:8px 10px;border-radius:12px;background:#f6f0e7;display:flex;flex-direction:column;gap:1px"><span style="font-size:10.5px;color:#a39789">km {{ s.k }}</span><span style="font-size:13.5px;font-weight:700">{{ s.p }}</span></div></sc-for><div style="padding:0 14px;border-radius:12px;border:1.5px dashed #e3d8ca;display:grid;place-items:center;font-size:12px;font-weight:600;color:#7a6e64">+ km 7</div></div></div>
+<div style="display:flex;flex-direction:column;gap:5px;flex:1;min-height:0"><span style="font-size:11.5px;font-weight:600;color:#7a6e64">Notes</span><div style="flex:1;min-height:60px;padding:12px;border-radius:12px;background:#f6f0e7;font-size:13.5px;line-height:1.5;color:#3d3530">Felt good, a bit windy along the causeway. Left calf slightly tight in the last 2 km.</div></div>
+<div style="display:flex;gap:10px;justify-content:flex-end"><div style="padding:11px 20px;border-radius:999px;background:#f1e9de;font-size:13.5px;font-weight:600">Cancel</div><div style="padding:11px 22px;border-radius:999px;background:#2d2621;color:#fffaf3;font-size:13.5px;font-weight:600">Save run</div></div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="2g"><div class="dv-olabel"><a class="dv-oid" href="#2g">2g</a>Log a run from a screenshot: review what was read</div>
+<div style="width:760px;background:#fffdf9;border-radius:26px;box-shadow:0 0 0 .5px rgba(60,40,20,.25),0 24px 60px rgba(60,40,20,.16);color:#2d2621;font-family:Figtree,sans-serif;padding:24px 26px;display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;align-items:center;gap:14px"><span style="font-family:'Bricolage Grotesque',sans-serif;font-size:20px;font-weight:700">Log a run</span><div style="margin-left:auto;display:flex;gap:2px;background:#f1e9de;padding:4px;border-radius:999px;font-size:12.5px;font-weight:600"><span style="padding:6px 14px;border-radius:999px;color:#7a6e64">Enter manually</span><span style="padding:6px 14px;border-radius:999px;background:#2d2621;color:#fffaf3">From screenshot</span></div></div>
+<div style="display:grid;grid-template-columns:240px minmax(0,1fr);gap:20px">
+<div style="height:380px;border-radius:20px;background:repeating-linear-gradient(135deg,#f1e9de 0 8px,#f8f2ea 8px 16px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;padding:16px"><span style="font:500 11px ui-monospace,Menlo,monospace;color:#7a6e64">watch / app screenshot</span><span style="font-size:11.5px;color:#a39789">Drag in, paste, or choose a file</span></div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<span style="font-size:13px;color:#5b4f45">We read these from your screenshot. Check them before saving.</span>
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px">
+<div style="padding:10px 12px;border-radius:12px;background:#f6f0e7;display:flex;flex-direction:column;gap:1px"><span style="font-size:10.5px;color:#a39789">Date</span><span style="font-size:13.5px;font-weight:700">Sun 4 Oct, 6:48 am</span></div>
+<div style="padding:10px 12px;border-radius:12px;background:#f6f0e7;display:flex;flex-direction:column;gap:1px"><span style="font-size:10.5px;color:#a39789">Distance</span><span style="font-size:13.5px;font-weight:700">15.02 km</span></div>
+<div style="padding:10px 12px;border-radius:12px;background:#f6f0e7;display:flex;flex-direction:column;gap:1px"><span style="font-size:10.5px;color:#a39789">Time</span><span style="font-size:13.5px;font-weight:700">1:24:10</span></div>
+<div style="padding:10px 12px;border-radius:12px;background:#f6f0e7;display:flex;flex-direction:column;gap:1px"><span style="font-size:10.5px;color:#a39789">Avg pace</span><span style="font-size:13.5px;font-weight:700">5:37 /km</span></div>
+<div style="padding:10px 12px;border-radius:12px;background:#f6f0e7;display:flex;flex-direction:column;gap:1px"><span style="font-size:10.5px;color:#a39789">Avg heart rate</span><span style="font-size:13.5px;font-weight:700">151 bpm</span></div>
+<div style="padding:10px 12px;border-radius:12px;background:oklch(0.92 0.05 60);box-shadow:inset 0 0 0 1.5px oklch(0.72 0.13 50);display:flex;flex-direction:column;gap:1px"><span style="font-size:10.5px;color:#5b4f45">Elevation · couldn't read</span><span style="font-size:13.5px;font-weight:700;color:#a39789">— m</span></div>
+</div>
+<div style="padding:10px 12px;border-radius:12px;background:#f6f0e7;display:flex;flex-direction:column;gap:4px"><span style="font-size:10.5px;color:#a39789">Splits · 15 found</span><span style="font-size:12.5px;font-weight:600;line-height:1.5">5:48 5:44 5:41 5:40 5:38 5:39 5:36 5:35 5:37 5:34 5:33 5:35 5:31 5:29 5:26</span></div>
+<div style="display:flex;flex-direction:column;gap:6px"><div style="display:flex;justify-content:space-between;font-size:11.5px;font-weight:600;color:#7a6e64"><span>Effort, add your own</span><span>6</span></div><div style="display:grid;grid-template-columns:repeat(10,1fr);gap:4px"><sc-for list="{{ kEffort }}" as="e" hint-placeholder-count="10"><div style="height:28px;border-radius:8px;display:grid;place-items:center;font-size:12px;font-weight:700;background:{{ e.bg }};color:{{ e.color }};box-shadow:inset 0 0 0 1.5px #ede4d8">{{ e.n }}</div></sc-for></div></div>
+</div>
+</div>
+<div style="display:flex;gap:10px;align-items:center"><span style="flex:1;font-size:12px;color:#7a6e64">The screenshot stays on this Mac.</span><div style="padding:11px 20px;border-radius:999px;background:#f1e9de;font-size:13.5px;font-weight:600">Cancel</div><div style="padding:11px 22px;border-radius:999px;background:#2d2621;color:#fffaf3;font-size:13.5px;font-weight:600">Save run</div></div>
+</div>
+</div>
+
+<div class="dv-opt" id="2h"><div class="dv-olabel"><a class="dv-oid" href="#2h">2h</a>Settings</div>
+<div style="width:600px;background:#fffdf9;border-radius:26px;box-shadow:0 0 0 .5px rgba(60,40,20,.25),0 24px 60px rgba(60,40,20,.16);color:#2d2621;font-family:Figtree,sans-serif;padding:26px 28px;display:flex;flex-direction:column;gap:22px">
+<span style="font-family:'Bricolage Grotesque',sans-serif;font-size:22px;font-weight:700">Settings</span>
+<div style="display:flex;align-items:center;gap:14px"><div style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font-size:14px;font-weight:700">Units</span><span style="font-size:12.5px;color:#7a6e64">Distances, paces and temperatures</span></div><div style="display:flex;gap:2px;background:#f1e9de;padding:4px;border-radius:999px;font-size:13px;font-weight:600"><span style="padding:6px 16px;border-radius:999px;background:#2d2621;color:#fffaf3">km · °C</span><span style="padding:6px 16px;border-radius:999px;color:#7a6e64">mi · °F</span></div></div>
+<div style="height:1px;background:rgba(60,40,20,.07)"></div>
+<div style="display:flex;flex-direction:column;gap:10px"><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:14px;font-weight:700">Run days</span><span style="font-size:12.5px;color:#7a6e64">5 days a week. Rest falls on the others.</span></div><div style="display:flex;gap:8px"><sc-for list="{{ kRunDays }}" as="r" hint-placeholder-count="7"><div style="width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-size:13.5px;font-weight:700;background:{{ r.bg }};color:{{ r.color }};box-shadow:inset 0 0 0 1.5px #ede4d8">{{ r.l }}</div></sc-for></div></div>
+<div style="display:flex;align-items:center;gap:14px"><div style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font-size:14px;font-weight:700">Long run day</span><span style="font-size:12.5px;color:#7a6e64">Weather can still move it a day either way</span></div><div style="padding:9px 14px;border-radius:12px;background:#f6f0e7;font-size:13.5px;font-weight:600">Sunday  ⌄</div></div>
+<div style="height:1px;background:rgba(60,40,20,.07)"></div>
+<div style="display:flex;flex-direction:column;gap:10px"><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:14px;font-weight:700">Export plan</span><span style="font-size:12.5px;color:#7a6e64">Calendar events update when the plan changes</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div style="padding:14px 16px;border-radius:16px;background:#f6f0e7;display:flex;flex-direction:column;gap:2px"><span style="font-size:13.5px;font-weight:700">Add to Calendar</span><span style="font-size:12px;color:#7a6e64">Subscribed · 38 runs</span></div><div style="padding:14px 16px;border-radius:16px;background:#f6f0e7;display:flex;flex-direction:column;gap:2px"><span style="font-size:13.5px;font-weight:700">Export CSV</span><span style="font-size:12px;color:#7a6e64">Full plan with paces</span></div></div></div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">Try next: "go with <a class="dv-oid" href="#2b">2b</a> and restyle the other screens to match" · "make <a class="dv-oid" href="#2d">2d</a> part of race setup for a new race" · "warmer, more saturated version of <a class="dv-oid" href="#2c">2c</a>"</p>
+</section>
+<section class="dv-turn" id="t1">
+<div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">Stride — local run training planner for macOS</span></div>
+<p style="margin:0 0 32px;max-width:760px;font-size:13px;line-height:1.55;color:rgba(0,0,0,.6);text-wrap:pretty">Assumptions: native macOS chrome (sidebar + unified toolbar), light appearance, Apple Health as the run source, sample race Philadelphia Marathon on Nov 22, 2026 with a 3:30 goal. One warm accent marks workouts and the current week; a blue accent is reserved for anything weather-driven. Claude's reasoning appears as short notes beside each change. Tweaks: toggle reasoning notes, and switch weather changes between auto-applied and needs-approval.</p>
+<div class="dv-opts">
+
+<div class="dv-opt" id="1a"><div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a>Plan overview — weeks to race</div>
+<div style="width:1180px;height:760px;display:flex;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 0 0 .5px rgba(0,0,0,.28),0 24px 60px rgba(0,0,0,.18);color:#1d1d1f">
+<div style="width:220px;flex:none;background:#f3f2f0;border-right:1px solid rgba(0,0,0,.08);display:flex;flex-direction:column;padding:16px 10px 14px">
+<div style="display:flex;gap:8px;padding:0 6px 22px"><div style="width:12px;height:12px;border-radius:50%;background:#ff5f57"></div><div style="width:12px;height:12px;border-radius:50%;background:#febc2e"></div><div style="width:12px;height:12px;border-radius:50%;background:#28c840"></div></div>
+<div style="font-size:11px;font-weight:600;color:#a1a1a6;padding:0 10px 6px">Training</div>
+<sc-for list="{{ navPlan }}" as="n" hint-placeholder-count="4"><div style="padding:6px 10px;border-radius:6px;font-size:13px;background:{{ n.bg }};font-weight:{{ n.fw }}">{{ n.label }}</div></sc-for>
+<div style="font-size:11px;font-weight:600;color:#a1a1a6;padding:18px 10px 6px">Races</div>
+<div style="padding:6px 10px;font-size:13px;display:flex;flex-direction:column;gap:2px"><span>Philadelphia Marathon</span><span style="font-size:11px;color:#6e6e73">Nov 22 · 3:30 goal</span></div>
+<div style="padding:6px 10px;font-size:13px;color:#6e6e73">Add Race…</div>
+<div style="margin-top:auto;padding:10px;border-top:1px solid rgba(0,0,0,.08);display:flex;flex-direction:column;gap:3px">
+<div style="display:flex;align-items:center;gap:6px;font-size:12px"><div style="width:7px;height:7px;border-radius:50%;background:#28c840"></div>Claude skill connected</div>
+<div style="font-size:11px;color:#6e6e73">Refreshed 6:02 AM · next 6:00 PM</div>
+</div>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;min-width:0">
+<div style="height:52px;flex:none;display:flex;align-items:center;gap:14px;padding:0 20px;border-bottom:1px solid rgba(0,0,0,.08)">
+<div style="display:flex;flex-direction:column"><span style="font-size:14px;font-weight:600">Plan</span><span style="font-size:11px;color:#6e6e73">Philadelphia Marathon · 47 days</span></div>
+<div style="margin-left:auto;font-size:12px;color:#6e6e73">Philadelphia, PA · 58° Clear</div>
+<div style="padding:5px 12px;border-radius:6px;border:1px solid rgba(0,0,0,.14);font-size:12px;font-weight:500;box-shadow:0 1px 1px rgba(0,0,0,.04)">Refresh Plan</div>
+</div>
+<div style="flex:1;padding:26px 30px;display:flex;flex-direction:column;gap:26px;overflow:hidden">
+<div style="display:flex;align-items:flex-end;gap:48px;flex:none">
+<div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:0"><span style="font-size:12px;color:#6e6e73">Build phase · Week 12 of 18</span><span style="font-size:30px;font-weight:600;letter-spacing:-.02em;white-space:nowrap">47 days to race</span></div>
+<div style="display:flex;flex-direction:column;gap:4px;margin-left:auto"><span style="font-size:12px;color:#6e6e73">Goal</span><span style="font-size:20px;font-weight:600;font-variant-numeric:tabular-nums">3:30:00</span><span style="font-size:11px;color:#6e6e73">8:01 /mi</span></div>
+<div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:12px;color:#6e6e73">Predicted</span><span style="font-size:20px;font-weight:600;font-variant-numeric:tabular-nums;color:oklch(0.58 0.17 38)">3:32:10</span><span style="font-size:11px;color:#6e6e73">from last 4 weeks</span></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px;flex:none">
+<div style="display:flex;justify-content:space-between;font-size:12px"><span style="font-weight:600">Weekly mileage</span><span style="color:#6e6e73">Peak 46 mi · Week 14</span></div>
+<div style="display:grid;grid-template-columns:repeat(18,minmax(0,1fr));gap:6px;align-items:end;height:150px">
+<sc-for list="{{ weeks }}" as="w" hint-placeholder-count="18"><div style="display:flex;flex-direction:column;align-items:center;gap:4px;justify-content:flex-end;height:100%"><span style="font-size:10px;color:{{ w.numColor }};font-variant-numeric:tabular-nums">{{ w.mi }}</span><div style="width:100%;height:{{ w.h }};background:{{ w.bg }};border-radius:3px"></div></div></sc-for>
+</div>
+<div style="display:grid;grid-template-columns:repeat(18,minmax(0,1fr));gap:6px;font-size:10px;color:#a1a1a6;text-align:center">
+<sc-for list="{{ weeks }}" as="w" hint-placeholder-count="18"><span style="color:{{ w.numColor }}">{{ w.label }}</span></sc-for>
+</div>
+<div style="display:grid;grid-template-columns:repeat(18,minmax(0,1fr));gap:6px;font-size:11px;color:#6e6e73">
+<div style="grid-column:1/5;border-top:2px solid rgba(0,0,0,.12);padding-top:5px">Base</div>
+<div style="grid-column:5/13;border-top:2px solid oklch(0.64 0.17 38);padding-top:5px;color:#1d1d1f">Build</div>
+<div style="grid-column:13/16;border-top:2px solid rgba(0,0,0,.12);padding-top:5px">Peak</div>
+<div style="grid-column:16/19;border-top:2px solid rgba(0,0,0,.12);padding-top:5px">Taper</div>
+</div>
+</div>
+<div style="display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:30px;flex:1;min-height:0">
+<div style="display:flex;flex-direction:column">
+<div style="display:flex;justify-content:space-between;font-size:12px;padding-bottom:8px;border-bottom:1px solid rgba(0,0,0,.08)"><span style="font-weight:600">This week</span><span style="color:#6e6e73">Oct 5 – 11 · 41 mi</span></div>
+<sc-for list="{{ days }}" as="d" hint-placeholder-count="7"><div style="display:grid;grid-template-columns:56px 1fr 70px 70px 96px;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid rgba(0,0,0,.05);font-size:12.5px;background:{{ d.rowBg }}"><span style="color:#6e6e73">{{ d.dow }} {{ d.date }}</span><span style="font-weight:{{ d.fw }};color:{{ d.typeColor }}">{{ d.type }}</span><span style="font-variant-numeric:tabular-nums">{{ d.dist }}</span><span style="font-variant-numeric:tabular-nums;color:#6e6e73">{{ d.pace }}</span><span style="font-size:11.5px;color:{{ d.wxColor }}">{{ d.wx }}</span></div></sc-for>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="font-size:12px;font-weight:600;padding-bottom:8px;border-bottom:1px solid rgba(0,0,0,.08)">Recent adjustments</div>
+<div style="display:flex;flex-direction:column;gap:3px"><span style="font-size:11px;color:oklch(0.52 0.15 245);font-weight:600">Today 6:02 AM · Weather</span><span style="font-size:12.5px;line-height:1.45">Swapped Wed and Thu. Thunderstorms forecast Thursday morning; tempo moved to Wednesday.</span></div>
+<div style="display:flex;flex-direction:column;gap:3px"><span style="font-size:11px;color:oklch(0.55 0.17 38);font-weight:600">Oct 4 · After long run</span><span style="font-size:12.5px;line-height:1.45">16 mi at 8:27/mi against an 8:35 target in 71°F. Predicted finish improved by 1:40.</span></div>
+<div style="display:flex;flex-direction:column;gap:3px"><span style="font-size:11px;color:#6e6e73;font-weight:600">Sep 30 · After intervals</span><span style="font-size:12.5px;line-height:1.45">Cut 6×800 to 5×800 next week after heart rate drift on the last two reps.</span></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="1b"><div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a>This week — weather-adjusted plan with diff</div>
+<div style="width:1180px;height:760px;display:flex;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 0 0 .5px rgba(0,0,0,.28),0 24px 60px rgba(0,0,0,.18);color:#1d1d1f">
+<div style="width:220px;flex:none;background:#f3f2f0;border-right:1px solid rgba(0,0,0,.08);display:flex;flex-direction:column;padding:16px 10px 14px">
+<div style="display:flex;gap:8px;padding:0 6px 22px"><div style="width:12px;height:12px;border-radius:50%;background:#ff5f57"></div><div style="width:12px;height:12px;border-radius:50%;background:#febc2e"></div><div style="width:12px;height:12px;border-radius:50%;background:#28c840"></div></div>
+<div style="font-size:11px;font-weight:600;color:#a1a1a6;padding:0 10px 6px">Training</div>
+<sc-for list="{{ navWeek }}" as="n" hint-placeholder-count="4"><div style="padding:6px 10px;border-radius:6px;font-size:13px;background:{{ n.bg }};font-weight:{{ n.fw }}">{{ n.label }}</div></sc-for>
+<div style="font-size:11px;font-weight:600;color:#a1a1a6;padding:18px 10px 6px">Races</div>
+<div style="padding:6px 10px;font-size:13px;display:flex;flex-direction:column;gap:2px"><span>Philadelphia Marathon</span><span style="font-size:11px;color:#6e6e73">Nov 22 · 3:30 goal</span></div>
+<div style="padding:6px 10px;font-size:13px;color:#6e6e73">Add Race…</div>
+<div style="margin-top:auto;padding:10px;border-top:1px solid rgba(0,0,0,.08);display:flex;flex-direction:column;gap:3px">
+<div style="display:flex;align-items:center;gap:6px;font-size:12px"><div style="width:7px;height:7px;border-radius:50%;background:#28c840"></div>Claude skill connected</div>
+<div style="font-size:11px;color:#6e6e73">Refreshed 6:02 AM · next 6:00 PM</div>
+</div>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;min-width:0">
+<div style="height:52px;flex:none;display:flex;align-items:center;gap:14px;padding:0 20px;border-bottom:1px solid rgba(0,0,0,.08)">
+<div style="display:flex;flex-direction:column"><span style="font-size:14px;font-weight:600">This Week</span><span style="font-size:11px;color:#6e6e73">Oct 5 – 11 · Week 12 of 18</span></div>
+<div style="margin-left:auto;display:flex;border:1px solid rgba(0,0,0,.14);border-radius:6px;font-size:12px;overflow:hidden"><span style="padding:4px 10px;color:#6e6e73">‹</span><span style="padding:4px 10px;border-left:1px solid rgba(0,0,0,.1);border-right:1px solid rgba(0,0,0,.1)">Today</span><span style="padding:4px 10px;color:#6e6e73">›</span></div>
+<div style="padding:5px 12px;border-radius:6px;border:1px solid rgba(0,0,0,.14);font-size:12px;font-weight:500">Refresh Plan</div>
+</div>
+<div style="flex:1;display:flex;min-height:0">
+<div style="flex:1;padding:22px 24px;display:flex;flex-direction:column;gap:18px;min-width:0">
+<div style="background:oklch(0.97 0.018 245);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;align-items:center;gap:10px"><span style="font-size:13px;font-weight:600;color:oklch(0.42 0.13 245)">Plan updated for weather</span><span style="font-size:11.5px;color:#6e6e73">Today 6:02 AM · Forecast for Thu Oct 8</span>
+<sc-if value="{{ needsApproval }}" hint-placeholder-val="{{ false }}"><div style="margin-left:auto;display:flex;gap:8px"><div style="padding:4px 12px;border-radius:6px;border:1px solid rgba(0,0,0,.14);background:#fff;font-size:12px">Keep Original</div><div style="padding:4px 12px;border-radius:6px;background:oklch(0.55 0.15 245);color:#fff;font-size:12px;font-weight:500">Accept Change</div></div></sc-if>
+<sc-if value="{{ autoApplied }}" hint-placeholder-val="{{ true }}"><div style="margin-left:auto;display:flex;gap:10px;align-items:center;font-size:12px"><span style="color:#6e6e73">Applied automatically</span><span style="color:oklch(0.48 0.15 245);font-weight:500">Undo</span></div></sc-if>
+</div>
+<div style="display:grid;grid-template-columns:auto 1fr auto 1fr;gap:6px 14px;font-size:12.5px;align-items:center">
+<span style="color:#6e6e73">Wed</span><span><span style="text-decoration:line-through;color:#a1a1a6">Easy 5 mi</span>  →  <strong style="font-weight:600">Tempo 8 mi</strong></span>
+<span style="color:#6e6e73">Thu</span><span><span style="text-decoration:line-through;color:#a1a1a6">Tempo 8 mi</span>  →  <strong style="font-weight:600">Easy 5 mi, treadmill OK</strong></span>
+</div>
+<sc-if value="{{ showReasoning }}" hint-placeholder-val="{{ true }}"><div style="font-size:12px;line-height:1.5;color:#3a3a3c;text-wrap:pretty">Thunderstorms (80%) and 20 mph gusts are forecast 6–10 AM Thursday. A tempo in those conditions would miss pace targets, so the quality session moves a day earlier, when it's 58° and dry. Weekly volume stays at 41 mi and Friday rest still precedes Sunday's long run.</div></sc-if>
+</div>
+<div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;flex:1;min-height:0">
+<sc-for list="{{ days }}" as="d" hint-placeholder-count="7"><div style="border-radius:10px;border:{{ d.cardBorder }};background:{{ d.cardBg }};padding:12px 10px;display:flex;flex-direction:column;gap:6px;opacity:{{ d.op }}">
+<div style="display:flex;justify-content:space-between;font-size:11px;color:#6e6e73"><span>{{ d.dow }}</span><span style="font-weight:{{ d.todayFw }};color:{{ d.dateColor }}">{{ d.date }}</span></div>
+<span style="font-size:13px;font-weight:600;color:{{ d.typeColor }};margin-top:6px">{{ d.type }}</span>
+<span style="font-size:22px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums">{{ d.distBig }}</span>
+<span style="font-size:11.5px;color:#6e6e73;font-variant-numeric:tabular-nums">{{ d.pace }}</span>
+<div style="margin-top:auto;display:flex;flex-direction:column;gap:6px">
+<span style="font-size:11px;color:{{ d.wxColor }};line-height:1.35">{{ d.wx }}</span>
+<span style="font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:{{ d.tagColor }}">{{ d.tag }}</span>
+</div>
+</div></sc-for>
+</div>
+</div>
+<div style="width:290px;flex:none;border-left:1px solid rgba(0,0,0,.08);background:#fbfbfa;padding:22px 20px;display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;flex-direction:column;gap:3px"><span style="font-size:11px;color:#6e6e73">Wed, Oct 7</span><span style="font-size:18px;font-weight:600">Tempo · 8 mi</span><span style="font-size:12px;color:#6e6e73">~1:08 total · target 7:40 /mi</span></div>
+<div style="display:flex;flex-direction:column;gap:0;font-size:12.5px">
+<div style="font-size:11px;font-weight:600;color:#a1a1a6;padding-bottom:6px">Structure</div>
+<div style="display:flex;justify-content:space-between;padding:7px 0;border-top:1px solid rgba(0,0,0,.06)"><span>Warm-up</span><span style="color:#6e6e73;font-variant-numeric:tabular-nums">1.5 mi @ 9:10</span></div>
+<div style="display:flex;justify-content:space-between;padding:7px 0;border-top:1px solid rgba(0,0,0,.06)"><span style="font-weight:600;color:oklch(0.55 0.17 38)">Tempo</span><span style="font-variant-numeric:tabular-nums;font-weight:600">5 mi @ 7:40</span></div>
+<div style="display:flex;justify-content:space-between;padding:7px 0;border-top:1px solid rgba(0,0,0,.06);border-bottom:1px solid rgba(0,0,0,.06)"><span>Cool-down</span><span style="color:#6e6e73;font-variant-numeric:tabular-nums">1.5 mi @ 9:15</span></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<div style="font-size:11px;font-weight:600;color:#a1a1a6">Forecast · Philadelphia</div>
+<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px;text-align:center">
+<sc-for list="{{ hourly }}" as="h" hint-placeholder-count="5"><div style="display:flex;flex-direction:column;gap:4px;padding:8px 0;border-radius:7px;background:{{ h.bg }}"><span style="font-size:10.5px;color:#6e6e73">{{ h.t }}</span><span style="font-size:14px;font-weight:600;font-variant-numeric:tabular-nums">{{ h.temp }}</span><span style="font-size:10px;color:#6e6e73">{{ h.c }}</span></div></sc-for>
+</div>
+<span style="font-size:12px;color:oklch(0.45 0.13 245)">Best window 6–8 AM · no heat adjustment</span>
+</div>
+<sc-if value="{{ showReasoning }}" hint-placeholder-val="{{ true }}"><div style="background:#f1f0ee;border-radius:8px;padding:12px;font-size:12px;line-height:1.5;color:#3a3a3c;text-wrap:pretty"><div style="font-size:11px;font-weight:600;color:#1d1d1f;margin-bottom:4px">Why 7:40</div>Last three tempos averaged 7:43 at heart rate 162. Sunday's long run came in under target, so pace holds rather than easing back.</div></sc-if>
+<div style="margin-top:auto;display:flex;gap:8px"><div style="flex:1;text-align:center;padding:6px 0;border-radius:6px;border:1px solid rgba(0,0,0,.14);font-size:12px">Move…</div><div style="flex:1;text-align:center;padding:6px 0;border-radius:6px;background:#1d1d1f;color:#fff;font-size:12px;font-weight:500">Send to Watch</div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="1c"><div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a>Run detail — completed long run, compared to target</div>
+<div style="width:1180px;height:760px;display:flex;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 0 0 .5px rgba(0,0,0,.28),0 24px 60px rgba(0,0,0,.18);color:#1d1d1f">
+<div style="width:220px;flex:none;background:#f3f2f0;border-right:1px solid rgba(0,0,0,.08);display:flex;flex-direction:column;padding:16px 10px 14px">
+<div style="display:flex;gap:8px;padding:0 6px 22px"><div style="width:12px;height:12px;border-radius:50%;background:#ff5f57"></div><div style="width:12px;height:12px;border-radius:50%;background:#febc2e"></div><div style="width:12px;height:12px;border-radius:50%;background:#28c840"></div></div>
+<div style="font-size:11px;font-weight:600;color:#a1a1a6;padding:0 10px 6px">Training</div>
+<sc-for list="{{ navHistory }}" as="n" hint-placeholder-count="4"><div style="padding:6px 10px;border-radius:6px;font-size:13px;background:{{ n.bg }};font-weight:{{ n.fw }}">{{ n.label }}</div></sc-for>
+<div style="font-size:11px;font-weight:600;color:#a1a1a6;padding:18px 10px 6px">Recent runs</div>
+<sc-for list="{{ recent }}" as="r" hint-placeholder-count="5"><div style="padding:6px 10px;border-radius:6px;display:flex;flex-direction:column;gap:1px;background:{{ r.bg }}"><span style="font-size:12.5px">{{ r.name }}</span><span style="font-size:11px;color:#6e6e73">{{ r.meta }}</span></div></sc-for>
+<div style="margin-top:auto;padding:10px;border-top:1px solid rgba(0,0,0,.08);display:flex;flex-direction:column;gap:3px">
+<div style="display:flex;align-items:center;gap:6px;font-size:12px"><div style="width:7px;height:7px;border-radius:50%;background:#28c840"></div>Apple Health synced</div>
+<div style="font-size:11px;color:#6e6e73">Last import Sun 9:41 AM</div>
+</div>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;min-width:0">
+<div style="height:52px;flex:none;display:flex;align-items:center;gap:14px;padding:0 20px;border-bottom:1px solid rgba(0,0,0,.08)">
+<div style="display:flex;flex-direction:column"><span style="font-size:14px;font-weight:600">Long Run · 16.0 mi</span><span style="font-size:11px;color:#6e6e73">Sun, Oct 4 · 7:12 AM</span></div>
+<div style="margin-left:auto;padding:5px 12px;border-radius:6px;border:1px solid rgba(0,0,0,.14);font-size:12px">Open in Health</div>
+</div>
+<div style="flex:1;display:flex;min-height:0">
+<div style="flex:1;padding:24px 28px;display:flex;flex-direction:column;gap:22px;min-width:0">
+<div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px">
+<div style="display:flex;flex-direction:column;gap:3px"><span style="font-size:11.5px;color:#6e6e73">Time</span><span style="font-size:22px;font-weight:600;font-variant-numeric:tabular-nums">2:15:12</span></div>
+<div style="display:flex;flex-direction:column;gap:3px"><span style="font-size:11.5px;color:#6e6e73">Avg pace</span><span style="font-size:22px;font-weight:600;font-variant-numeric:tabular-nums">8:27</span><span style="font-size:11px;color:oklch(0.55 0.17 38)">8s faster than 8:35</span></div>
+<div style="display:flex;flex-direction:column;gap:3px"><span style="font-size:11.5px;color:#6e6e73">Avg heart rate</span><span style="font-size:22px;font-weight:600;font-variant-numeric:tabular-nums">148</span><span style="font-size:11px;color:#6e6e73">Zone 2–3</span></div>
+<div style="display:flex;flex-direction:column;gap:3px"><span style="font-size:11.5px;color:#6e6e73">Elevation</span><span style="font-size:22px;font-weight:600;font-variant-numeric:tabular-nums">412 ft</span></div>
+<div style="display:flex;flex-direction:column;gap:3px"><span style="font-size:11.5px;color:#6e6e73">Conditions</span><span style="font-size:22px;font-weight:600;color:oklch(0.5 0.14 245)">71°</span><span style="font-size:11px;color:#6e6e73">68% humidity</span></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:2px;flex:1;min-height:0">
+<div style="display:flex;justify-content:space-between;font-size:12px;padding-bottom:8px;border-bottom:1px solid rgba(0,0,0,.08)"><span style="font-weight:600">Splits</span><span style="color:#6e6e73">Bar length = speed · line = 8:35 target</span></div>
+<sc-for list="{{ splits }}" as="s" hint-placeholder-count="16"><div style="display:grid;grid-template-columns:28px 1fr 44px 36px;align-items:center;gap:10px;height:24px;font-size:12px;font-variant-numeric:tabular-nums"><span style="color:#a1a1a6;text-align:right">{{ s.mi }}</span><div style="position:relative;height:12px;background:#f3f2f0;border-radius:3px"><div style="position:absolute;left:0;top:0;bottom:0;width:{{ s.w }};background:{{ s.bg }};border-radius:3px"></div><div style="position:absolute;left:41.6%;top:-4px;bottom:-4px;width:1px;background:#1d1d1f"></div></div><span style="font-weight:600">{{ s.pace }}</span><span style="color:#6e6e73">{{ s.hr }}</span></div></sc-for>
+</div>
+</div>
+<div style="width:300px;flex:none;border-left:1px solid rgba(0,0,0,.08);background:#fbfbfa;padding:24px 20px;display:flex;flex-direction:column;gap:18px">
+<sc-if value="{{ showReasoning }}" hint-placeholder-val="{{ true }}"><div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:11px;font-weight:600;color:#a1a1a6">Assessment</div><div style="font-size:13px;line-height:1.55;text-wrap:pretty">Even, controlled effort with a strong negative split: the last 3 miles averaged 8:16. Heart rate stayed under 160 despite 71° and humid conditions, which normally costs 10–15 s/mi.</div></div></sc-if>
+<div style="display:flex;flex-direction:column;gap:0;font-size:12.5px">
+<div style="font-size:11px;font-weight:600;color:#a1a1a6;padding-bottom:8px">Changes to plan</div>
+<div style="padding:9px 0;border-top:1px solid rgba(0,0,0,.06);display:flex;flex-direction:column;gap:2px"><span style="font-weight:600">Predicted finish 3:33:50 → 3:32:10</span><span style="color:#6e6e73;font-size:11.5px">Marathon pace estimate now 8:07 /mi</span></div>
+<div style="padding:9px 0;border-top:1px solid rgba(0,0,0,.06);display:flex;flex-direction:column;gap:2px"><span style="font-weight:600">Sun Oct 11 long run kept at 18 mi</span><span style="color:#6e6e73;font-size:11.5px">Last 4 mi now at goal pace, 8:01</span></div>
+<div style="padding:9px 0;border-top:1px solid rgba(0,0,0,.06);border-bottom:1px solid rgba(0,0,0,.06);display:flex;flex-direction:column;gap:2px"><span style="font-weight:600">Tempo target held at 7:40</span><span style="color:#6e6e73;font-size:11.5px">No change needed</span></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-size:11px;font-weight:600;color:#a1a1a6">How did it feel?</div>
+<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px;font-size:12px;text-align:center"><span style="padding:6px 0;border-radius:6px;border:1px solid rgba(0,0,0,.1)">Easy</span><span style="padding:6px 0;border-radius:6px;background:#1d1d1f;color:#fff">Good</span><span style="padding:6px 0;border-radius:6px;border:1px solid rgba(0,0,0,.1)">Hard</span><span style="padding:6px 0;border-radius:6px;border:1px solid rgba(0,0,0,.1)">Rough</span><span style="padding:6px 0;border-radius:6px;border:1px solid rgba(0,0,0,.1)">Hurt</span></div>
+<span style="font-size:11px;color:#6e6e73">Sent to Claude with the next refresh.</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="1d"><div class="dv-olabel"><a class="dv-oid" href="#1d">1d</a>New race — goal setup</div>
+<div style="width:640px;display:flex;flex-direction:column;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 0 0 .5px rgba(0,0,0,.28),0 24px 60px rgba(0,0,0,.18);color:#1d1d1f">
+<div style="display:flex;align-items:center;padding:14px 16px;gap:8px"><div style="width:12px;height:12px;border-radius:50%;background:#ff5f57"></div><div style="width:12px;height:12px;border-radius:50%;background:#febc2e"></div><div style="width:12px;height:12px;border-radius:50%;background:#28c840"></div></div>
+<div style="padding:8px 40px 28px;display:flex;flex-direction:column;gap:22px">
+<div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:22px;font-weight:600;letter-spacing:-.01em">What are you training for?</span><span style="font-size:13px;color:#6e6e73">Stride builds a plan backward from race day and adjusts it as you run.</span></div>
+<div style="display:grid;grid-template-columns:120px 1fr;gap:14px 16px;align-items:center;font-size:13px">
+<span style="text-align:right;color:#3a3a3c">Race</span><div style="padding:6px 9px;border:1px solid rgba(0,0,0,.16);border-radius:6px;box-shadow:inset 0 1px 1px rgba(0,0,0,.04)">Philadelphia Marathon</div>
+<span style="text-align:right;color:#3a3a3c">Date</span><div style="display:flex;gap:10px;align-items:center"><div style="padding:6px 9px;border:1px solid rgba(0,0,0,.16);border-radius:6px;font-variant-numeric:tabular-nums">Sun, Nov 22, 2026</div><span style="font-size:12px;color:#6e6e73">47 days · 7 weeks</span></div>
+<span style="text-align:right;color:#3a3a3c">Distance</span><div style="display:flex;border:1px solid rgba(0,0,0,.14);border-radius:6px;overflow:hidden;font-size:12px;width:max-content"><span style="padding:5px 12px">5K</span><span style="padding:5px 12px;border-left:1px solid rgba(0,0,0,.1)">10K</span><span style="padding:5px 12px;border-left:1px solid rgba(0,0,0,.1)">Half</span><span style="padding:5px 12px;background:#1d1d1f;color:#fff">Marathon</span><span style="padding:5px 12px;border-left:1px solid rgba(0,0,0,.1)">Custom</span></div>
+<span style="text-align:right;color:#3a3a3c">Goal time</span><div style="display:flex;gap:10px;align-items:center"><div style="padding:6px 9px;border:1px solid rgba(0,0,0,.16);border-radius:6px;font-variant-numeric:tabular-nums;width:80px">3:30:00</div><span style="font-size:12px;color:#6e6e73">8:01 /mi race pace</span></div>
+<span style="text-align:right;color:#3a3a3c">Run days</span><div style="display:flex;gap:6px"><sc-for list="{{ runDays }}" as="r" hint-placeholder-count="7"><div style="width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:500;background:{{ r.bg }};color:{{ r.color }};border:{{ r.border }}">{{ r.l }}</div></sc-for></div>
+<span style="text-align:right;color:#3a3a3c">Long run</span><div style="padding:5px 9px;border:1px solid rgba(0,0,0,.16);border-radius:6px;width:max-content;font-size:12.5px">Sunday  ⌄</div>
+<span style="text-align:right;color:#3a3a3c">Weather for</span><div style="padding:6px 9px;border:1px solid rgba(0,0,0,.16);border-radius:6px">Philadelphia, PA</div>
+</div>
+<div style="background:#f5f4f2;border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;justify-content:space-between;font-size:12px"><span style="font-weight:600">Current fitness from Apple Health</span><span style="color:#6e6e73">Last 6 weeks</span></div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+<div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:18px;font-weight:600;font-variant-numeric:tabular-nums">32 mi</span><span style="font-size:11px;color:#6e6e73">weekly average</span></div>
+<div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:18px;font-weight:600;font-variant-numeric:tabular-nums">14 mi</span><span style="font-size:11px;color:#6e6e73">longest run</span></div>
+<div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:18px;font-weight:600;font-variant-numeric:tabular-nums">1:39:20</span><span style="font-size:11px;color:#6e6e73">recent half</span></div>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:10px;padding-top:4px"><span style="font-size:11.5px;color:#6e6e73;flex:1;line-height:1.4">Runs locally. The Claude skill refreshes at 6 AM, 6 PM and after each synced run.</span><div style="padding:6px 14px;border-radius:6px;border:1px solid rgba(0,0,0,.14);font-size:13px">Cancel</div><div style="padding:6px 14px;border-radius:6px;background:oklch(0.6 0.17 38);color:#fff;font-size:13px;font-weight:500">Build Plan</div></div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="1e"><div class="dv-olabel"><a class="dv-oid" href="#1e">1e</a>Menu bar extra — today at a glance</div>
+<div style="width:520px;display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+<div style="width:100%;height:26px;background:rgba(246,245,243,.9);border-radius:6px;display:flex;align-items:center;justify-content:flex-end;gap:16px;padding:0 14px;font-size:12.5px;color:#1d1d1f;box-shadow:0 0 0 .5px rgba(0,0,0,.15)"><span style="padding:1px 7px;border-radius:4px;background:rgba(0,0,0,.12);font-weight:500">6 mi · 58°</span><span>Tue Oct 6  9:14 AM</span></div>
+<div style="width:320px;background:rgba(250,250,249,.97);border-radius:12px;box-shadow:0 0 0 .5px rgba(0,0,0,.25),0 14px 40px rgba(0,0,0,.2);padding:14px;display:flex;flex-direction:column;gap:12px;color:#1d1d1f;margin-right:110px">
+<div style="display:flex;justify-content:space-between;font-size:11px;color:#6e6e73"><span>Today</span><span>Week 12 · 47 days to race</span></div>
+<div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:20px;font-weight:600;letter-spacing:-.01em">Easy · 6 mi</span><span style="font-size:12px;color:#6e6e73;font-variant-numeric:tabular-nums">9:05 /mi · about 55 min</span></div>
+<div style="background:oklch(0.97 0.018 245);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:3px"><span style="font-size:12.5px;font-weight:600;color:oklch(0.42 0.13 245)">58° Clear · wind 4 mph</span><span style="font-size:11.5px;color:#3a3a3c">Good conditions until 11 AM</span></div>
+<div style="border-top:1px solid rgba(0,0,0,.08);padding-top:10px;display:flex;flex-direction:column;gap:6px;font-size:12px">
+<div style="display:flex;justify-content:space-between"><span style="color:#6e6e73">Wed</span><span style="font-weight:600;color:oklch(0.55 0.17 38)">Tempo 8 mi</span></div>
+<div style="display:flex;justify-content:space-between"><span style="color:#6e6e73">Thu</span><span>Easy 5 mi · storms</span></div>
+<div style="display:flex;justify-content:space-between"><span style="color:#6e6e73">Sun</span><span style="font-weight:600">Long 18 mi</span></div>
+</div>
+<div style="display:flex;gap:6px"><div style="flex:1;text-align:center;padding:5px 0;border-radius:6px;border:1px solid rgba(0,0,0,.14);font-size:12px">Refresh Now</div><div style="flex:1;text-align:center;padding:5px 0;border-radius:6px;background:#1d1d1f;color:#fff;font-size:12px">Open Stride</div></div>
+<span style="font-size:10.5px;color:#a1a1a6;text-align:center">Plan refreshed 6:02 AM by Claude</span>
+</div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">Try next: "dark mode for <a class="dv-oid" href="#1b">1b</a>" · "add a chat panel to ask Claude about the plan" · "explore a calendar-first layout instead of <a class="dv-oid" href="#1a">1a</a>"</p>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showReasoning&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;weatherMode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Auto-applied&quot;,&quot;Needs approval&quot;],&quot;default&quot;:&quot;Auto-applied&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const ACC = 'oklch(0.64 0.17 38)', ACCT = 'oklch(0.55 0.17 38)', WX = 'oklch(0.5 0.14 245)';
+    const nav = sel => ['Today', 'This Week', 'Plan', 'History'].map(l => ({ label: l, bg: l === sel ? 'rgba(0,0,0,.09)' : 'transparent', fw: l === sel ? 500 : 400 }));
+    const miles = [22, 25, 28, 24, 30, 33, 35, 30, 36, 38, 40, 41, 44, 46, 40, 32, 24, 12];
+    const cur = 11;
+    const weeks = miles.map((m, i) => ({
+      mi: m, label: 'W' + (i + 1), h: Math.round(m / 46 * 120) + 'px',
+      bg: i === cur ? ACC : i < cur ? '#3a3a3c' : 'rgba(0,0,0,.1)',
+      numColor: i === cur ? ACCT : '#a1a1a6'
+    }));
+    const raw = [
+      { dow: 'Mon', date: '5', type: 'Rest', dist: '—', distBig: '—', pace: '', wx: '', done: true },
+      { dow: 'Tue', date: '6', type: 'Easy', dist: '6 mi', distBig: '6 mi', pace: '9:05 /mi', wx: '58° Clear', today: true },
+      { dow: 'Wed', date: '7', type: 'Tempo', dist: '8 mi', distBig: '8 mi', pace: '5 @ 7:40', wx: '58° Dry', q: true, moved: true },
+      { dow: 'Thu', date: '8', type: 'Easy', dist: '5 mi', distBig: '5 mi', pace: '9:10 /mi', wx: 'Storms 80% · 20 mph', bad: true, moved: true },
+      { dow: 'Fri', date: '9', type: 'Rest', dist: '—', distBig: '—', pace: '', wx: '' },
+      { dow: 'Sat', date: '10', type: 'Recovery', dist: '4 mi', distBig: '4 mi', pace: '9:30 /mi', wx: '55° Cloudy' },
+      { dow: 'Sun', date: '11', type: 'Long', dist: '18 mi', distBig: '18 mi', pace: '8:35, last 4 @ 8:01', wx: '52° Wind 6 mph', q: true }
+    ];
+    const days = raw.map(d => ({
+      ...d,
+      fw: d.q ? 600 : 400,
+      typeColor: d.type === 'Tempo' ? ACCT : d.type === 'Rest' ? '#a1a1a6' : '#1d1d1f',
+      wxColor: d.bad ? WX : '#6e6e73',
+      rowBg: d.today ? 'oklch(0.975 0.015 38)' : 'transparent',
+      cardBorder: d.today ? '1.5px solid ' + ACC : d.moved ? '1px solid oklch(0.82 0.07 245)' : '1px solid rgba(0,0,0,.08)',
+      cardBg: d.moved ? 'oklch(0.985 0.008 245)' : d.type === 'Rest' ? '#fafaf9' : '#fff',
+      op: d.done ? 0.55 : 1,
+      todayFw: d.today ? 700 : 400,
+      dateColor: d.today ? ACCT : '#6e6e73',
+      tag: d.moved ? 'Moved · weather' : d.today ? 'Today' : d.done ? 'Done' : '',
+      tagColor: d.moved ? WX : ACCT
+    }));
+    const hourly = [['6a', '56°', 'Clear'], ['7a', '58°', 'Clear'], ['8a', '61°', 'Sun'], ['9a', '64°', 'Sun'], ['10a', '67°', 'Breezy']]
+      .map(([t, temp, c], i) => ({ t, temp, c, bg: i < 2 ? 'oklch(0.96 0.025 245)' : 'transparent' }));
+    const paces = [521, 516, 513, 511, 510, 509, 508, 510, 506, 507, 504, 502, 505, 500, 496, 492];
+    const hrs = [138, 141, 143, 144, 145, 146, 146, 147, 148, 149, 150, 151, 152, 154, 156, 158];
+    const fmt = s => Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+    const splits = paces.map((p, i) => ({ mi: i + 1, pace: fmt(p), hr: hrs[i], w: ((540 - p) / 60 * 100).toFixed(1) + '%', bg: p < 515 ? (i >= 13 ? ACC : '#3a3a3c') : '#a1a1a6' }));
+    const recent = [['Long Run · 16 mi', 'Sun Oct 4 · 8:27 /mi', true], ['Recovery · 4 mi', 'Sat Oct 3 · 9:34 /mi'], ['Easy · 6 mi', 'Thu Oct 1 · 9:02 /mi'], ['Intervals · 7 mi', 'Wed Sep 30 · 6×800'], ['Easy · 5 mi', 'Tue Sep 29 · 9:08 /mi']]
+      .map(([name, meta, s]) => ({ name, meta, bg: s ? 'rgba(0,0,0,.09)' : 'transparent' }));
+    const on = [false, true, true, true, false, true, true];
+    const runDays = ['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((l, i) => ({ l, bg: on[i] ? '#1d1d1f' : '#fff', color: on[i] ? '#fff' : '#6e6e73', border: on[i] ? '1px solid #1d1d1f' : '1px solid rgba(0,0,0,.16)' }));
+    const AP = 'oklch(0.72 0.13 50)', APD = 'oklch(0.5 0.12 45)', APT = 'oklch(0.92 0.05 60)', SKY = 'oklch(0.72 0.1 230)', SKYD = 'oklch(0.45 0.1 235)', SKYT = 'oklch(0.95 0.025 230)';
+    const kNav = sel => ['Home', 'This week', 'History', 'Race', 'Settings'].map(l => ({ label: l, bg: l === sel ? '#2d2621' : 'transparent', color: l === sel ? '#fffaf3' : '#7a6e64' }));
+    const km = [32, 36, 40, 45, 48, 40, 52, 55, 46, 58, 42, 30], kc = 3;
+    const kWeeks = km.map((k, i) => ({
+      km: k, label: 'W' + (i + 1), h: Math.round(k / 58 * 120) + 'px',
+      bg: i === kc ? AP : i < kc ? 'oklch(0.84 0.06 55)' : '#efe6da', num: i === kc ? APD : '#a39789',
+      prog: i <= kc ? AP : 'rgba(255,255,255,.65)', size: Math.round(36 + k / 58 * 26) + 'px',
+      sBg: i === kc ? AP : i < kc ? '#2d2621' : '#fffdf9', sColor: i < kc ? '#fffaf3' : i === kc ? '#2d2621' : '#7a6e64',
+      sBorder: i > kc ? '1.5px solid #e3d8ca' : '1.5px solid transparent', sRing: i === kc ? '0 0 0 6px oklch(0.92 0.05 60)' : 'none'
+    }));
+    const kRaw = [
+      { dow: 'Mon', date: '5', type: 'Rest', km: '—', pace: '', wx: '', done: 1 },
+      { dow: 'Tue', date: '6', type: 'Easy', km: '8 km', pace: '5:50 /km', wx: '19° Sunny', today: 1 },
+      { dow: 'Wed', date: '7', type: 'Tempo', km: '10 km', pace: '6 km @ 4:50', wx: '22° Mild', moved: 1, q: 1 },
+      { dow: 'Thu', date: '8', type: 'Easy', km: '6 km', pace: '5:55 /km', wx: '35° Hot, go before 7 am', moved: 1, hot: 1 },
+      { dow: 'Fri', date: '9', type: 'Rest', km: '—', pace: '', wx: '' },
+      { dow: 'Sat', date: '10', type: 'Recovery', km: '5 km', pace: '6:10 /km', wx: '21° Cloudy' },
+      { dow: 'Sun', date: '11', type: 'Long', km: '16 km', pace: '5:35 /km', wx: '17° SW wind 25 km/h', q: 1 }
+    ];
+    const kDays = kRaw.map(d => ({
+      ...d,
+      tileBg: d.today ? APT : d.moved ? SKYT : d.type === 'Rest' ? '#f1e9de' : '#fffdf9',
+      tileBorder: d.today ? '2px solid ' + AP : '2px solid transparent',
+      typeColor: d.q ? APD : d.type === 'Rest' ? '#a39789' : '#2d2621',
+      tag: d.moved ? 'Moved for weather' : d.today ? 'Today' : d.done ? 'Done' : '',
+      tagColor: d.moved ? SKYD : APD, wxColor: d.hot ? SKYD : '#7a6e64', op: d.done ? 0.5 : 1,
+      rowBg: d.today ? APT : 'transparent', dot: d.moved ? SKY : d.q ? AP : d.type === 'Rest' ? '#e0d6c9' : '#bfb2a3'
+    }));
+    const kRuns = [['Long run', 'Sun 4 Oct', '15.0 km', '1:24:10', '5:37 /km', 'Manual'], ['Recovery', 'Sat 3 Oct', '5.0 km', '30:45', '6:09 /km', 'Screenshot'], ['Easy', 'Thu 1 Oct', '8.0 km', '46:20', '5:47 /km', 'Screenshot'], ['Intervals', 'Wed 30 Sep', '9.0 km', '48:05', '6 × 800 m', 'Manual'], ['10 km time trial', 'Sun 27 Sep', '10.0 km', '47:10', '4:43 /km', 'Screenshot'], ['Easy', 'Fri 25 Sep', '7.0 km', '41:02', '5:52 /km', 'Manual']]
+      .map(([type, date, dist, time, pace, src]) => ({ type, date, dist, time, pace, src, srcBg: src === 'Screenshot' ? SKYT : '#f1e9de', srcColor: src === 'Screenshot' ? SKYD : '#7a6e64' }));
+    const kEffort = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => ({ n, bg: n === 6 ? '#2d2621' : '#fffdf9', color: n === 6 ? '#fffaf3' : '#7a6e64' }));
+    const kSplits = [['1', '5:42'], ['2', '5:38'], ['3', '5:35'], ['4', '5:36'], ['5', '5:33'], ['6', '5:31']].map(([k, p]) => ({ k, p }));
+    const kOn = [false, true, true, true, false, true, true];
+    const kRunDays = ['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((l, i) => ({ l, bg: kOn[i] ? '#2d2621' : '#fffdf9', color: kOn[i] ? '#fffaf3' : '#a39789' }));
+    const kHourly = [['6 am', '15°'], ['7 am', '17°'], ['8 am', '19°'], ['9 am', '21°'], ['10 am', '22°']].map(([t, temp], i) => ({ t, temp, bg: i < 2 ? SKYT : '#f6f0e7' }));
+    const kExtra = { navHome: kNav('Home'), navWeekK: kNav('This week'), navHist: kNav('History'), navRace: kNav('Race'), navSet: kNav('Settings'), kWeeks, kDays, kRuns, kEffort, kSplits, kRunDays, kHourly };
+    const needsApproval = (this.props.weatherMode ?? 'Auto-applied') === 'Needs approval';
+    return {
+      ...kExtra,
+      navPlan: nav('Plan'), navWeek: nav('This Week'), navHistory: nav('History'),
+      weeks, days, hourly, splits, recent, runDays,
+      needsApproval, autoApplied: !needsApproval,
+      showReasoning: this.props.showReasoning ?? true
+    };
+  }
+}
+</script>
+</body>
+</html>
