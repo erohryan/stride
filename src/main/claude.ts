@@ -41,6 +41,17 @@ export async function findClaude(): Promise<string> {
   return (cachedPath = hit)
 }
 
+/**
+ * The environment for claude, minus API credentials, so it always signs in
+ * with the claude.ai subscription rather than billing an API key.
+ */
+export function subscriptionEnv(): NodeJS.ProcessEnv {
+  const env = { ...process.env }
+  delete env.ANTHROPIC_API_KEY
+  delete env.ANTHROPIC_AUTH_TOKEN
+  return env
+}
+
 /** The skill file minus its frontmatter, used as the system prompt. */
 export function loadSkill(skillFile: string): string {
   return readFileSync(skillFile, 'utf8').replace(/^---\n[\s\S]*?\n---\n/, '')
@@ -85,7 +96,7 @@ export async function callClaude<T>(call: ClaudeCall): Promise<T> {
 
   const stdout = await new Promise<string>((resolve, reject) => {
     // Run from an empty folder so no project CLAUDE.md or settings leak into the planner.
-    const child = spawn(bin, args, { cwd: call.logDir, env: process.env, stdio: ['pipe', 'pipe', 'pipe'] })
+    const child = spawn(bin, args, { cwd: call.logDir, env: subscriptionEnv(), stdio: ['pipe', 'pipe', 'pipe'] })
     live.add(child)
     child.on('exit', () => live.delete(child))
     let out = ''
