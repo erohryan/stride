@@ -4,6 +4,8 @@ import { sessionShort, sessionTitle, unloggedSessions } from '@shared/plan-view'
 import { parseISODate } from '@shared/dates'
 import type { AppState, ISODate, Run, Session } from '@shared/types'
 import { LogRun } from './LogRun'
+import { scoreRun, sessionFor } from '@shared/score'
+import { ScorePill } from '../components/RunScore'
 
 /** What the right-hand card is doing. */
 export type LogTarget =
@@ -82,6 +84,7 @@ function RunList({ state, today, target, onTarget }: Props): React.JSX.Element {
               {formatDayDate(r.date)} · {formatDuration(r.durationSec)} · {formatPace(r.durationSec / r.distanceKm, units)}
             </span>
           </span>
+          <ScorePill score={scoreRun(r, sessionFor(r, state.sessions))} />
           {r.isBenchmark && <Badge bg="var(--hero)" color="var(--accent-text)">Benchmark</Badge>}
           <Badge bg={r.source === 'screenshot' ? 'var(--sky-tint)' : 'var(--muted-fill)'} color={r.source === 'screenshot' ? 'var(--sky-text)' : 'var(--muted)'}>
             {r.source === 'screenshot' ? 'Screenshot' : 'Manual'}

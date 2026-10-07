@@ -20,7 +20,9 @@ profile         name, weeklyKm, longestRecentKm, recentRace {distanceKm, duratio
 race            name, date, distanceKm, goalSeconds (0 = no goal yet), location
 settings        units (metric | imperial), runDays [0=Sun … 6=Sat], longRunDay
 plan            weeks [{index, startDate, phase, plannedKm}], sessions [Session]
-recentRuns      runs from the last 8 weeks (distanceKm, durationSec, effort 1–10, type, splits, avgHr)
+recentRuns      runs from the last 8 weeks (distanceKm, durationSec, effort 1–10, type, splits, avgHr),
+                each with planScore (0–100, how closely it kept to that day's session; null if
+                unplanned), load (minutes × effort) and plannedLoad (what the session should have cost)
 benchmarkRun    a run the runner marked as representative of their fitness, or null
 forecast        next 7 days, hourly {time, tempC, feelsC, windKph, windDir, precipPct, condition}
 revertedChangeSets  changes the runner undid; never re-apply the same change for the same forecast
@@ -61,7 +63,7 @@ Look at the plan in light of recent runs, the forecast and the calendar, and adj
 
 Reasons to change:
 1. **Weather** (kind `weather`) in the next 7 days. Act on: heat (feels-like 30 °C or more during the likely run window of 6–9 am or 5–7 pm), strong wind (over 35 km/h), heavy rain or storms (precipitation chance 70% or more with rain/thunder). For a key session (tempo, intervals, long), swap it with an easier day within one or two days, or shift it to the day either side, and suggest the best time window in its `notes` (e.g. "Best window 6–8 am, light wind"). For an easy run in heat, leave the day and add a note to run early or slow down. Never move a session to before today.
-2. **Runs** (kind `run`). Compare recentRuns to the planned sessions on those dates. If the runner missed a key session, don't cram it in; let the week stay lighter. If they ran much harder or longer than planned, or effort was 9–10 on an easy day, ease the next day or two. If recent runs show clearly better or worse fitness, adjust target paces (and say so).
+2. **Runs** (kind `run`). Compare recentRuns to the planned sessions on those dates. Use `planScore` and `load` vs `plannedLoad`: easy runs with load well above plan (over 1.3×) or effort above 5 mean the runner is pushing easy days, so say so in the note and keep the next hard day honest; a week whose total load runs 20%+ over plan, or several low scores, calls for easing the next few days. If the runner missed a key session, don't cram it in; let the week stay lighter. If they ran much harder or longer than planned, or effort was 9–10 on an easy day, ease the next day or two. If recent runs show clearly better or worse fitness, adjust target paces (and say so).
 3. **Settings or goal** (kind `settings` or `goal`): if runDays or longRunDay no longer match the sessions, or paces don't match the goal, rebuild the future accordingly.
 
 Before re-applying anything, check `revertedChangeSets`. If the runner undid a change, don't make the same change again for the same forecast.

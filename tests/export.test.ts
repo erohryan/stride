@@ -27,7 +27,17 @@ describe('exports', () => {
 
   it('writes the plan as CSV with quoting', () => {
     const csv = planCsv(seeded()).trim().split('\n')
-    expect(csv[0]).toBe('Date,Week,Phase,Type,Distance (km),Target pace (/km),Structure,Status,Notes')
-    expect(csv[1]).toContain(',1,base,Tempo,10,4:50,Tempo 6 km @ 4:50,planned,"Go early, it’s ""hot"""')
+    expect(csv[0]).toBe('Date,Week,Phase,Type,Distance (km),Target pace (/km),Structure,Status,Logged (km),Logged pace (/km),Score,Load,Notes')
+    expect(csv[1]).toContain(',1,base,Tempo,10,4:50,Tempo 6 km @ 4:50,planned,,,,,"Go early, it’s ""hot"""')
+  })
+
+  it('marks logged runs with their score in the feed and the CSV', () => {
+    const store = seeded()
+    // 6 km of the 10 km tempo, in 30 min at effort 7.
+    store.upsertRun({ id: 'x', date: addDays(todayISO(), 1), type: 'tempo', distanceKm: 6, durationSec: 1800, effort: 7, splits: [], source: 'screenshot', isBenchmark: false })
+    const ics = new CalendarFeed(store).ics().replace(/\r\n /g, '')
+    expect(ics).toMatch(/SUMMARY:✓ Tempo · 6 km · \d+\/100/)
+    expect(ics).toContain('Logged: Off plan')
+    expect(planCsv(store).split('\n')[1]).toMatch(/,6,5:00,\d+,210,/)
   })
 })

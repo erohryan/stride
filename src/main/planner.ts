@@ -14,6 +14,7 @@ import {
 } from '@shared/planner'
 import type { ChangeSet, GoalOptions, Prediction, PredictionTimes, Race, Session } from '@shared/types'
 import { callClaude, loadSkill } from './claude'
+import { scoreRun, sessionFor } from '@shared/score'
 import type { Store } from './db'
 
 export interface PlannerDeps {
@@ -154,7 +155,11 @@ export class Planner {
       race: raceOverride ?? store.getActiveRace(),
       settings: store.getSettings(),
       plan: { weeks: store.getWeeks(), sessions: store.getSessions() },
-      recentRuns: runs,
+      // Each run carries its plan score and load, so the planner can react to how training is landing.
+      recentRuns: runs.map((r) => {
+        const sc = scoreRun(r, sessionFor(r, store.getSessions()))
+        return { ...r, planScore: sc.total, load: sc.load.actual, plannedLoad: sc.load.planned }
+      }),
       benchmarkRun: store.getRuns().find((r) => r.isBenchmark) ?? null,
       forecast: store.getForecast(today),
       revertedChangeSets: store.getChangeSets().filter((c) => c.reverted && c.kind === 'weather')

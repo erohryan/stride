@@ -16,6 +16,7 @@ import {
   weekIndexFor
 } from '@shared/plan-view'
 import { forecastFor, summarizeDay } from '@shared/weather'
+import { loadDelta, scoreRun } from '@shared/score'
 import type { AppState, ISODate, Phase, Session } from '@shared/types'
 
 interface Props {
@@ -182,9 +183,10 @@ function Today({ state, today, onLogRun }: Props): React.JSX.Element {
   let big: string
   let sub: string
   if (run) {
-    title = 'Done today'
+    const score = scoreRun(run, session)
+    title = score.total !== null ? `Logged · ${score.total} · ${score.label}` : 'Logged today'
     big = formatDistanceWithUnit(run.distanceKm, units)
-    sub = `${formatDuration(run.durationSec)} · ${formatPace(run.durationSec / run.distanceKm, units)}`
+    sub = `${formatDuration(run.durationSec)} · ${formatPace(run.durationSec / run.distanceKm, units)} · load ${score.load.actual}${score.load.planned ? ` (${loadDelta(score.load.ratio)})` : ''}`
   } else if (session) {
     title = sessionTitle(session.type)
     big = formatDistanceWithUnit(session.distanceKm, units)

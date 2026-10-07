@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { addDays, parseISODate } from '@shared/dates'
-import { formatDayDate, formatDistanceWithUnit, formatDuration, formatPace, weekdayShort } from '@shared/format'
+import { formatDayDate, formatDistanceWithUnit, formatPace, weekdayShort } from '@shared/format'
 import {
   aboutDuration,
   changeHeadline,
@@ -18,6 +18,8 @@ import {
 } from '@shared/plan-view'
 import { bestWindow, forecastFor, morningCells, summarizeDay } from '@shared/weather'
 import type { AppState, ChangeSet, ISODate, Session } from '@shared/types'
+import { scoreRun, weekLoad } from '@shared/score'
+import { RunScoreCard, ScorePill, scoreTone } from '../components/RunScore'
 
 interface Props {
   state: AppState
@@ -37,6 +39,7 @@ export function Week({ state, today, onLogRun }: Props): React.JSX.Element {
   useEffect(() => setSelected(defaultSelection(days)), [week.startDate]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const change = weatherChangeFor(state.changeSets, week.startDate)
+  const load = weekLoad(week.startDate, state.sessions, state.runs)
   const day = days.find((d) => d.date === selected) ?? days[0]
 
   return (
@@ -47,6 +50,7 @@ export function Week({ state, today, onLogRun }: Props): React.JSX.Element {
         </span>
         <span style={{ fontSize: 13, color: 'var(--muted)' }}>
           Week {week.index} of {weeks.length} · {formatDistanceWithUnit(week.plannedKm, units)}
+          {load.actual > 0 && ` · Load ${load.actual} of ${load.planned} planned`}
         </span>
         <div style={{ marginLeft: 'auto', display: 'flex', gap: 6, alignSelf: 'center' }}>
           <RoundButton label="Previous week" disabled={index === 0} onClick={() => setIndex(index - 1)}>
@@ -120,11 +124,12 @@ function DayTile({ day, state, selected, onSelect }: { day: Day; state: AppState
   const moved = !!s?.movedFrom
   const missed = day.isPast && s && !done
   const wx = day.isPast ? null : summarizeDay(forecastFor(state.forecast, day.date), units)
+  const score = day.run ? scoreRun(day.run, s) : null
 
   const bg = day.isToday ? 'var(--hero)' : moved ? 'var(--sky-tint)' : !s && !day.run ? 'var(--muted-fill)' : 'var(--card)'
   const border = day.isToday ? 'var(--apricot)' : selected ? 'rgba(45,38,33,.22)' : 'transparent'
-  const tag = moved && !day.isPast ? 'Moved for weather' : day.isToday ? 'Today' : done ? 'Done' : missed ? 'Missed' : ''
-  const tagColor = moved && !day.isPast ? 'var(--sky-text)' : missed ? 'var(--faint)' : 'var(--accent-text)'
+  const tag = day.run ? (score?.label ? `Logged · ${score.label}` : 'Logged · extra') : moved && !day.isPast ? 'Moved for weather' : day.isToday ? 'Today' : done ? 'Done' : missed ? 'Missed' : ''
+  const tagColor = day.run ? scoreTone(score?.total ?? null).color : moved && !day.isPast ? 'var(--sky-text)' : missed ? 'var(--faint)' : 'var(--accent-text)'
   const date = parseISODate(day.date)
 
   return (
@@ -142,15 +147,30 @@ function DayTile({ day, state, selected, onSelect }: { day: Day; state: AppState
         gap: 4,
         textAlign: 'left',
         minWidth: 0,
-        opacity: day.isPast && !day.isToday ? 0.5 : 1
+        // Past days fade, except ones with a logged run: those are the record.
+        opacity: day.isPast && !day.isToday && !day.run ? 0.5 : 1
       }}
     >
-      <span style={{ fontSize: 12, color: 'var(--muted)' }}>
-        {weekdayShort(date.getDay())} {date.getDate()}
+      <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 4, fontSize: 12, color: 'var(--muted)' }}>
+        <span>
+          {weekdayShort(date.getDay())} {date.getDate()}
+        </span>
+        {score && <ScorePill score={score} />}
       </span>
       {/* Keyed on content so a session the plan changed fades in fresh. */}
       <div key={s ? `${s.id}:${s.type}:${s.distanceKm}` : 'rest'} className="fade-in" style={{ display: 'flex', flexDirection: 'column', gap: 4, marginTop: 10 }}>
-        {s || !day.run ? (
+        {s && day.run ? (
+          // Logged against a plan: what was run, and what was planned.
+          <>
+            <span style={{ fontSize: 13, fontWeight: 700, color: isKey(s.type) ? 'var(--accent-text)' : 'var(--ink)' }}>{sessionShort(s.type)}</span>
+            <span className="display" style={{ fontSize: 26, fontWeight: 700, letterSpacing: '-0.02em', whiteSpace: 'nowrap' }}>
+              {formatDistanceWithUnit(day.run.distanceKm, units)}
+            </span>
+            <span style={{ fontSize: 12, color: 'var(--muted)' }}>
+              {formatPace(day.run.durationSec / day.run.distanceKm, units)} · of {formatDistanceWithUnit(s.distanceKm, units)}
+            </span>
+          </>
+        ) : s || !day.run ? (
           <>
             <span style={{ fontSize: 13, fontWeight: 700, color: !s ? 'var(--faint)' : isKey(s.type) ? 'var(--accent-text)' : 'var(--ink)' }}>{s ? sessionShort(s.type) : 'Rest'}</span>
             <span className="display" style={{ fontSize: 26, fontWeight: 700, letterSpacing: '-0.02em', whiteSpace: 'nowrap' }}>
@@ -199,8 +219,11 @@ function DetailPanel({ day, state, today, onLogRun }: { day: Day; state: AppStat
         </span>
       </div>
 
+      {run && <RunScoreCard run={run} score={scoreRun(run, s)} units={units} />}
+
       {s && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          {run && <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--muted)' }}>Planned</span>}
           {structureRows(s, units).map((r, i) => (
             <div
               key={i}
@@ -240,14 +263,7 @@ function DetailPanel({ day, state, today, onLogRun }: { day: Day; state: AppStat
       )}
 
       <div style={{ marginTop: 'auto' }}>
-        {run ? (
-          <div style={{ padding: '12px 14px', borderRadius: 14, background: 'var(--inset)', fontSize: 13, display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <span style={{ fontWeight: 700 }}>Logged</span>
-            <span style={{ color: 'var(--muted)' }}>
-              {formatDistanceWithUnit(run.distanceKm, units)} in {formatDuration(run.durationSec)} · {formatPace(run.durationSec / run.distanceKm, units)}
-            </span>
-          </div>
-        ) : (
+        {!run && (
           s &&
           day.date <= today && (
             <button className="btn-dark" style={{ width: '100%' }} onClick={() => onLogRun(s)}>

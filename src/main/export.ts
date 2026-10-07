@@ -1,8 +1,9 @@
 import { createServer, type Server } from 'http'
 import { addDays, todayISO } from '@shared/dates'
-import { formatDistanceWithUnit, formatPace } from '@shared/format'
+import { formatDistanceWithUnit, formatDuration, formatPace } from '@shared/format'
+import { loadDelta, runLoad, scoreRun } from '@shared/score'
 import { sessionTitle, structureRows } from '@shared/plan-view'
-import type { Session, Units } from '@shared/types'
+import type { Run, Session, Units } from '@shared/types'
 import type { Store } from './db'
 
 // ── Calendar feed ──────────────────────────────────────
@@ -73,20 +74,36 @@ export class CalendarFeed {
       'REFRESH-INTERVAL;VALUE=DURATION:PT1H',
       'X-PUBLISHED-TTL:PT1H'
     ]
-    for (const s of store.getSessions()) {
-      if (s.type === 'rest' || s.date < from) continue
-      const title = s.type === 'race' && race ? `Race day: ${race.name}` : `${sessionTitle(s.type)} · ${formatDistanceWithUnit(s.distanceKm, units)}`
+    const runs = store.getRuns()
+    const sessions = store.getSessions()
+    const event = (uid: string, date: string, title: string, description: string): void => {
       lines.push(
         'BEGIN:VEVENT',
-        `UID:${s.id}@stride`,
+        `UID:${uid}@stride`,
         `DTSTAMP:${stamp}`,
-        `DTSTART;VALUE=DATE:${s.date.replace(/-/g, '')}`,
-        `DTEND;VALUE=DATE:${addDays(s.date, 1).replace(/-/g, '')}`,
+        `DTSTART;VALUE=DATE:${date.replace(/-/g, '')}`,
+        `DTEND;VALUE=DATE:${addDays(date, 1).replace(/-/g, '')}`,
         `SUMMARY:${escape(title)}`,
-        `DESCRIPTION:${escape(describe(s, units))}`,
+        `DESCRIPTION:${escape(description)}`,
         'TRANSP:TRANSPARENT',
         'END:VEVENT'
       )
+    }
+    for (const s of sessions) {
+      if (s.type === 'rest' || s.date < from) continue
+      const run = runs.find((r) => r.date === s.date)
+      const planned = s.type === 'race' && race ? `Race day: ${race.name}` : `${sessionTitle(s.type)} · ${formatDistanceWithUnit(s.distanceKm, units)}`
+      if (run) {
+        const sc = scoreRun(run, s)
+        event(s.id, s.date, `✓ ${sessionTitle(s.type)} · ${formatDistanceWithUnit(run.distanceKm, units)} · ${sc.total}/100`, `Logged: ${sc.label}. ${formatDistanceWithUnit(run.distanceKm, units)} in ${formatDuration(run.durationSec)} (${formatPace(run.durationSec / run.distanceKm, units)}), effort ${run.effort}/10, load ${sc.load.actual} (${loadDelta(sc.load.ratio)}).\n\nPlanned: ${describe(s, units)}`)
+        continue
+      }
+      event(s.id, s.date, planned, describe(s, units))
+    }
+    // Runs on days with nothing planned.
+    for (const r of runs) {
+      if (r.date < from || sessions.some((s) => s.date === r.date && s.type !== 'rest')) continue
+      event(`run-${r.id}`, r.date, `✓ Extra run · ${formatDistanceWithUnit(r.distanceKm, units)}`, `${formatDuration(r.durationSec)}, effort ${r.effort}/10, load ${runLoad(r)}.`)
     }
     lines.push('END:VCALENDAR')
     return lines.map(fold).join('\r\n') + '\r\n'
@@ -132,7 +149,8 @@ export function planCsv(store: Store): string {
   const unit = units === 'metric' ? 'km' : 'mi'
   const weeks = store.getWeeks()
   const weekOf = (date: string): (typeof weeks)[number] | undefined => [...weeks].reverse().find((w) => w.startDate <= date)
-  const header = ['Date', 'Week', 'Phase', 'Type', `Distance (${unit})`, `Target pace (/${unit})`, 'Structure', 'Status', 'Notes']
+  const runs = store.getRuns()
+  const header = ['Date', 'Week', 'Phase', 'Type', `Distance (${unit})`, `Target pace (/${unit})`, 'Structure', 'Status', `Logged (${unit})`, `Logged pace (/${unit})`, 'Score', 'Load', 'Notes']
   const rows = store
     .getSessions()
     .filter((s) => s.type !== 'rest')
@@ -149,10 +167,22 @@ export function planCsv(store: Store): string {
           .map((r) => `${r.label} ${r.detail}`)
           .join('; '),
         s.status,
+        ...logged(runs.find((r) => r.date === s.date), s, units),
         s.notes ?? ''
       ]
     })
   return [header, ...rows].map((r) => r.map(csvCell).join(',')).join('\n') + '\n'
+}
+
+function logged(run: Run | undefined, s: Session, units: Units): string[] {
+  if (!run) return ['', '', '', '']
+  const sc = scoreRun(run, s)
+  return [
+    formatDistanceWithUnit(run.distanceKm, units).replace(/ (km|mi)$/, ''),
+    formatPace(run.durationSec / run.distanceKm, units).replace(/ \/(km|mi)$/, ''),
+    sc.total === null ? '' : String(sc.total),
+    String(sc.load.actual)
+  ]
 }
 
 const csvCell = (v: string): string => (/[",\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v)
