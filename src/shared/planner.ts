@@ -190,6 +190,8 @@ export function validatePlan(opts: {
   sessions: PlannedSession[]
   weeks: PlanWeek[]
   history?: Session[]
+  /** For new and rebuilt plans: check the long run builds toward race distance from where the runner is. */
+  readiness?: { longestRecentKm: number }
 }): string[] {
   const { today, race, sessions, weeks } = opts
   const problems: string[] = []
@@ -227,12 +229,44 @@ export function validatePlan(opts: {
     }
   }
 
+  if (opts.readiness) problems.push(...readinessProblems(today, race, sessions, opts.readiness.longestRecentKm))
+
   // Weeks must be contiguous Mondays.
   weeks.forEach((w, i) => {
     if (parseISODate(w.startDate).getDay() !== 1) problems.push(`week ${w.index}: startDate ${w.startDate} is not a Monday`)
     if (i > 0 && daysBetween(weeks[i - 1].startDate, w.startDate) !== 7) problems.push(`week ${w.index}: not 7 days after week ${weeks[i - 1].index}`)
   })
 
+  return problems
+}
+
+/**
+ * The longest long run a plan must reach before race day, given the time available.
+ * Null when there's too little time to insist on one.
+ */
+export function minPeakLongRunKm(raceKm: number, weeksToRace: number): number | null {
+  if (weeksToRace < 6) return null
+  if (raceKm >= 30) return 28
+  if (raceKm >= 15) return 16
+  if (raceKm >= 8) return 10
+  return Math.min(8, raceKm * 1.6)
+}
+
+function readinessProblems(today: ISODate, race: Race, sessions: PlannedSession[], longestRecentKm: number): string[] {
+  const problems: string[] = []
+  const longs = sessions.filter((s) => s.type === 'long' && s.date < race.date).sort((a, b) => a.date.localeCompare(b.date))
+  const weeks = Math.floor(daysBetween(today, race.date) / 7)
+  const need = minPeakLongRunKm(race.distanceKm, weeks)
+  const peak = Math.max(0, ...longs.map((s) => s.distanceKm))
+  if (need !== null && peak < need) {
+    problems.push(`the longest long run is ${peak} km; for a ${race.distanceKm} km race with ${weeks} weeks to go it must reach at least ${need} km`)
+  }
+  // Don't start below what the runner already does (up to the peak they need).
+  const floor = 0.85 * Math.min(longestRecentKm, need ?? longestRecentKm)
+  const early = longs.slice(0, 2).filter((s) => s.distanceKm < floor)
+  if (early.length) {
+    problems.push(`long runs on ${early.map((s) => s.date).join(' and ')} are below the runner's current longest run (${longestRecentKm} km); start at about ${Math.round(longestRecentKm)} km`)
+  }
   return problems
 }
 

@@ -48,6 +48,10 @@ Build the whole plan from `planStart` to race day: `weeks`, `sessions` (today on
 
 If `race.goalSeconds` is 0, plan for the realistic option.
 
+If `plan.weeks` is not empty, this is a **rebuild** of an existing plan (the runner asked for it, often after changing their details). Keep `planStart`, return every week from it to race day, keep the weeks that ended before today exactly as given (same index, phase and plannedKm), and plan fresh from today using everything you now know, including `recentRuns`. Write the `changes` note about what's different, e.g. "We rebuilt your plan from today: long runs now build from 12 km to 18 km."
+
+If the request includes `previousAttemptProblems`, your last answer broke those rules. Fix every one of them.
+
 ### refresh
 Look at the plan in light of recent runs, the forecast and the calendar, and adjust only what needs adjusting.
 - Always return a fresh `prediction` and `goalOptions` (same rules as predict).
@@ -85,9 +89,14 @@ Before re-applying anything, check `revertedChangeSets`. If the runner undid a c
 
 **Phases.** Split the weeks into base (≈35%), build (≈35%), peak (≈15%), and taper (the last 1–2 weeks: 2 for half and marathon, 1 for 5K/10K). Short plans compress base first. Round so every week has a phase.
 
-**Volume.** Start from the runner's current weekly km (from recent runs, otherwise profile.weeklyKm). Increase by at most 10% a week, with a cutback week (−20 to −25%) every 3rd or 4th week in base and build. Peak volume guidelines: 5K/10K 1.6–2× starting volume up to ~50 km; half ~45–60 km; marathon ~60–80 km. Cap growth by what is safe in the time available rather than forcing a target, but with 8 or more weeks to go, the peak week should be at least 1.35× the starting week. Taper: −25 to −35% in the first taper week. Race week (not counting the race itself) holds 2–3 short easy runs on run days early in the week, one with strides, plus a 3–5 km shakeout the day before if that's a run day. Its non-race volume is about 30–40% of peak, and plannedKm for race week includes the race.
+**The long run comes first.** Being able to cover the race distance on the day depends most on the long run, so plan it first and let weekly volume follow.
 
-**Long run.** At most 35% of the week's volume (40% when the week is under 35 km). Start at the smaller of profile.longestRecentKm and that cap, grow ~1–2 km a week, and drop in cutback weeks. Peak long run: 5K/10K ~12–16 km; half 18–22 km; marathon 30–34 km. If the cap stops the long run from reaching its peak, raise weekly volume (within the 10% rule) rather than breaking the cap. Last long run of meaningful length 2 weeks out for a half, 3 for a marathon.
+- **Start** at the runner's current longest run (profile.longestRecentKm, or the longest of recentRuns), or 1 km more. Never start below 90% of it: a plan that starts with a long run shorter than what they already do loses fitness they have.
+- **Grow** by 1–2 km a week, with a cutback (−20 to −30%) every 3rd or 4th week.
+- **Peak** 2–3 weeks before race day (3 for a marathon) at: 5K 10–12 km; 10K 12–16 km; half **at least 16 km, ideally 18–20 km**; marathon **at least 28 km, ideally 30–32 km**. With 8+ weeks this is non-negotiable; work backward from the peak to find the weekly steps. Only with fewer than 6 weeks may the peak fall short, and then get as close as the 2 km/week growth allows.
+- **Share of the week:** with 3 run days the long run may be up to 50% of the week; 4 days, 45%; 5+ days, 40% (35% once weeks pass 50 km). If the long run needs more than that, add volume to the other days rather than shortening the long run.
+
+**Volume.** Start from the runner's current weekly km (from recent runs, otherwise profile.weeklyKm). Weekly volume rises with the long run: up to 10% a week, or up to 15% while weeks are under 30 km (small numbers). Cutback weeks (−20 to −25%) match the long-run cutbacks. Peak volume guidelines: 5K/10K 1.6–2× starting volume up to ~50 km; half 30–40 km on 3 run days, 40–60 km on 4+; marathon 55–80 km. With 8 or more weeks to go, the peak week is at least 1.35× the starting week. Taper: −25 to −35% in the first taper week. Race week (not counting the race itself) holds 2–3 short easy runs on run days early in the week, one with strides, plus a 3–5 km shakeout the day before if that's a run day. Its non-race volume is about 30–40% of peak, and plannedKm for race week includes the race.
 
 **Run lengths.** Easy runs are at least 5 km (4 km for 5K plans or weeks under 25 km), except the shakeout the day before a race (3–5 km). Spread the rest of the week's volume evenly across easy days, rather than leaving some runs tiny.
 

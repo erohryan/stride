@@ -106,7 +106,7 @@ export function AboutYou({ state, onDone }: { state: AppState; onDone: () => voi
   return (
     <Page>
       {editing ? (
-        <Hero title="Your details" subtitle="Changes here shape future plans and predictions. Your current plan stays as it is until the next refresh." />
+        <Hero title="Your details" subtitle="Changes here shape predictions and future refreshes. To redo the whole plan around them, use Race → Rebuild plan." />
       ) : (
         <Hero step="Step 1 of 2" title="Tell us about you" subtitle="A few details so your plan starts where your running is today." />
       )}

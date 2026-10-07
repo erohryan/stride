@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { mondayOf, validatePlan, type PlannedSession } from '@shared/planner'
+import { minPeakLongRunKm, mondayOf, validatePlan, type PlannedSession } from '@shared/planner'
 import type { PlanWeek, Race } from '@shared/types'
 
 const race: Race = { id: 'r', name: 'Test 10K', date: '2026-10-18', distanceKm: 10, goalSeconds: 2700, location: null }
@@ -52,5 +52,29 @@ describe('validatePlan', () => {
     expect(mondayOf('2026-10-06')).toBe('2026-10-05')
     expect(mondayOf('2026-10-11')).toBe('2026-10-05')
     expect(mondayOf('2026-10-05')).toBe('2026-10-05')
+  })
+})
+
+describe('readiness', () => {
+  const half: Race = { id: 'h', name: 'Half', date: '2026-12-06', distanceKm: 21.0975, goalSeconds: 6900, location: null }
+  // Ryan's first plan: long runs 8 → 11 km on 3 days a week.
+  const longs = ['2026-10-11:8', '2026-10-18:9', '2026-10-25:7', '2026-11-01:8', '2026-11-08:9', '2026-11-15:10', '2026-11-22:11', '2026-11-29:9']
+  const thin = [...longs.map((x) => s(x.split(':')[0], 'long', Number(x.split(':')[1]))), s('2026-12-06', 'race', 21.0975)]
+
+  it('rejects a half-marathon plan whose long run stalls at 11 km', () => {
+    const out = validatePlan({ today: '2026-10-07', race: half, sessions: thin, weeks: [], readiness: { longestRecentKm: 12 } }).join(' | ')
+    expect(out).toMatch(/longest long run is 11 km.*at least 16 km/)
+    expect(out).toMatch(/below the runner's current longest run \(12 km\)/)
+  })
+
+  it('accepts one that starts at the current long run and builds to 18 km', () => {
+    const good = [12, 13, 11, 14, 15, 13, 17, 18].map((km, i) => s(longs[i].split(':')[0], 'long', km))
+    expect(validatePlan({ today: '2026-10-07', race: half, sessions: [...good, s('2026-12-06', 'race', 21.0975)], weeks: [], readiness: { longestRecentKm: 12 } })).toEqual([])
+  })
+
+  it('does not insist on a peak when the race is close', () => {
+    expect(minPeakLongRunKm(21.0975, 4)).toBeNull()
+    expect(minPeakLongRunKm(42.195, 10)).toBe(28)
+    expect(minPeakLongRunKm(10, 8)).toBe(10)
   })
 })

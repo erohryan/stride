@@ -20,6 +20,8 @@ export interface StrideApi {
   /** Predicts race times and goal options for a race that may not be saved yet. */
   predict(r: Race): Promise<{ prediction: PredictionTimes; goalOptions: GoalOptions }>
   refresh(): Promise<void>
+  /** Rebuilds the plan from today, keeping past weeks (after changing details, or if it looks wrong). */
+  rebuildPlan(): Promise<void>
   undo(changeSetId: string): Promise<void>
   searchPlaces(q: string): Promise<Location[]>
 
@@ -60,6 +62,7 @@ export const IPC = {
   saveRace: 'race:save',
   predict: 'plan:predict',
   refresh: 'plan:refresh',
+  rebuildPlan: 'plan:rebuild',
   undo: 'plan:undo',
   searchPlaces: 'geo:search',
   importScreenshots: 'shots:import',

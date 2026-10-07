@@ -202,6 +202,8 @@ function registerIpc(): void {
   })
   ipcMain.handle(IPC.predict, (_, r: Race) => planner.predict(r))
   ipcMain.handle(IPC.refresh, () => runRefresh())
+  // Failures show through state.refresh.error, like any refresh.
+  ipcMain.handle(IPC.rebuildPlan, () => planner.buildPlan().catch(() => undefined))
   ipcMain.handle(IPC.undo, (_, id: string) => planner.undo(id))
   ipcMain.handle(IPC.searchPlaces, (_, q: string) => searchPlaces(q))
   ipcMain.handle(IPC.importScreenshots, (_, files: { name: string; data: ArrayBuffer }[]) => shots.import(files))

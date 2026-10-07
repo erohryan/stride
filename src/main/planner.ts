@@ -119,6 +119,13 @@ export class Planner {
     return runs
   }
 
+  /** The runner's current longest run: what they told us, or longer if a recent run says so. */
+  private longestRecentKm(): number {
+    const { store } = this.deps
+    const recent = store.getRunsSince(addDays(todayISO(), -42)).map((r) => r.distanceKm)
+    return Math.max(store.getProfile()?.longestRecentKm ?? 0, ...recent)
+  }
+
   /** Restores the sessions a change set replaced. */
   undo(changeSetId: string): void {
     const { store } = this.deps
@@ -141,11 +148,12 @@ export class Planner {
     return {
       task,
       today,
-      planStart: task === 'build_plan' ? mondayOf(today) : undefined,
+      // A rebuild keeps the plan's week numbering; a new plan starts this week.
+      planStart: task === 'build_plan' ? (store.getWeeks()[0]?.startDate ?? mondayOf(today)) : undefined,
       profile: store.getProfile(),
       race: raceOverride ?? store.getActiveRace(),
       settings: store.getSettings(),
-      plan: task === 'build_plan' ? { weeks: [], sessions: [] } : { weeks: store.getWeeks(), sessions: store.getSessions() },
+      plan: { weeks: store.getWeeks(), sessions: store.getSessions() },
       recentRuns: runs,
       benchmarkRun: store.getRuns().find((r) => r.isBenchmark) ?? null,
       forecast: store.getForecast(today),
@@ -178,11 +186,11 @@ export class Planner {
     const replaceFrom = todaysDone ? addDays(req.today, 1) : req.today
 
     let res = await this.call(req, task)
-    let problems = res.sessions ? this.check(res, race, replaceFrom) : []
+    let problems = res.sessions ? this.check(res, race, replaceFrom, task) : []
     if (problems.length) {
       // One retry, telling the planner exactly what was wrong.
       res = await this.call(req, `${task}.retry`, { previousAttemptProblems: problems })
-      problems = res.sessions ? this.check(res, race, replaceFrom) : []
+      problems = res.sessions ? this.check(res, race, replaceFrom, task) : []
       if (problems.length) throw new Error(`The new plan broke a training rule: ${problems[0]}`)
     }
 
@@ -202,7 +210,7 @@ export class Planner {
     this.deps.afterRefresh?.()
   }
 
-  private check(res: PlannerResponse, race: Race, replaceFrom: string): string[] {
+  private check(res: PlannerResponse, race: Race, replaceFrom: string, task: PlannerTask): string[] {
     const { store } = this.deps
     const sessions = res.sessions!.filter((s) => s.date >= replaceFrom)
     return validatePlan({
@@ -210,7 +218,9 @@ export class Planner {
       race,
       sessions,
       weeks: res.weeks ?? store.getWeeks(),
-      history: store.getSessions().filter((s) => s.date < replaceFrom)
+      history: store.getSessions().filter((s) => s.date < replaceFrom),
+      // New and rebuilt plans must build the long run toward race distance from where the runner is.
+      readiness: task === 'build_plan' ? { longestRecentKm: this.longestRecentKm() } : undefined
     })
   }
 

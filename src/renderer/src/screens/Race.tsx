@@ -226,6 +226,7 @@ function initialChoice(options: GoalOptions | null, goal: number): GoalChoice {
 }
 
 function Goal({ state, today, onNewRace }: { state: AppState; today: ISODate; onNewRace: () => void }): React.JSX.Element {
+  const [confirmRebuild, setConfirmRebuild] = useState(false)
   const race = state.race!
   const { units } = state.settings
   const options = state.goalOptions
@@ -256,10 +257,35 @@ function Goal({ state, today, onNewRace }: { state: AppState; today: ISODate; on
             {race.name} · {formatDayDate(race.date)} · {formatDistanceWithUnit(race.distanceKm, units)}
           </span>
         </div>
-        <button className="pill-btn" style={{ background: 'var(--muted-fill)' }} onClick={onNewRace}>
-          New race
-        </button>
+        <div style={{ display: 'flex', gap: 6 }}>
+          <button className="pill-btn" style={{ background: 'var(--muted-fill)' }} disabled={state.refresh.running} onClick={() => setConfirmRebuild(true)}>
+            Rebuild plan
+          </button>
+          <button className="pill-btn" style={{ background: 'var(--muted-fill)' }} onClick={onNewRace}>
+            New race
+          </button>
+        </div>
       </div>
+      {confirmRebuild && (
+        <div className="fade-in" style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', borderRadius: 16, background: 'var(--hero)' }}>
+          <span style={{ flex: 1, fontSize: 12.5, lineHeight: 1.45, color: 'var(--body-on-tint)' }}>
+            Rebuild every session from today using your latest details and runs. Past weeks and logged runs stay as they are. Takes a few minutes.
+          </span>
+          <button className="btn-soft" style={{ background: 'transparent' }} onClick={() => setConfirmRebuild(false)}>
+            Cancel
+          </button>
+          <button
+            className="btn-dark"
+            style={{ padding: '10px 18px' }}
+            onClick={() => {
+              setConfirmRebuild(false)
+              void window.stride.rebuildPlan()
+            }}
+          >
+            Rebuild
+          </button>
+        </div>
+      )}
       {options ? (
         <GoalPicker options={options} distanceKm={race.distanceKm} units={units} choice={choice} ownTime={ownTime} onChoose={setChoice} onOwnTime={setOwnTime} />
       ) : (

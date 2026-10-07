@@ -19,6 +19,7 @@ const api: StrideApi = {
   saveRace: (r) => ipcRenderer.invoke(IPC.saveRace, r),
   predict: (r) => ipcRenderer.invoke(IPC.predict, r),
   refresh: () => ipcRenderer.invoke(IPC.refresh),
+  rebuildPlan: () => ipcRenderer.invoke(IPC.rebuildPlan),
   undo: (id) => ipcRenderer.invoke(IPC.undo, id),
   searchPlaces: (q) => ipcRenderer.invoke(IPC.searchPlaces, q),
   importScreenshots: (files) => ipcRenderer.invoke(IPC.importScreenshots, files),
